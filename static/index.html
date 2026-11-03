@@ -3,228 +3,770 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Word Wizards - Dyslexia Screener</title>
+<title>Word Wizards · Learning-difference screener</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+Telugu:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #FFF8EC; --card: #FFFFFF; --ink: #1F2A44; --muted: #5B6478;
-    --teal: #0E8A7E; --teal-soft: #D7F1EC; --orange: #E8772E; --red: #D64545;
-    --green: #2E9E5B; --line: #EADFCB; --radius: 20px;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font-family: "Lexend", "Noto Sans Devanagari", "Noto Sans Telugu", Verdana, sans-serif;
-    font-size: 20px; line-height: 1.5; letter-spacing: .02em;
-  }
-  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
-  .card { background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 28px; }
-  h1 { font-size: 2.2rem; margin: 0 0 4px; } h2 { margin: 0 0 8px; }
-  .muted { color: var(--muted); }
-  button { font: inherit; cursor: pointer; border-radius: 16px; border: none; }
-  button:focus-visible { outline: 4px solid var(--orange); outline-offset: 3px; }
-  .btn { background: var(--teal); color: #fff; padding: 14px 32px; font-weight: 600; font-size: 1.1rem; }
-  .btn:hover { filter: brightness(1.08); }
-  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-  .langs button { background: var(--teal-soft); color: var(--ink); padding: 12px 22px; border: 2px solid transparent; }
-  .langs button[aria-pressed="true"] { border-color: var(--teal); background: #fff; font-weight: 600; }
-  label { font-weight: 600; } input[type=number] { font: inherit; width: 100px; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--line); }
-  .hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
-  .target { font-size: 2.6rem; font-weight: 700; background: var(--teal-soft); padding: 2px 22px; border-radius: 14px; }
-  .timer { height: 12px; background: var(--line); border-radius: 8px; overflow: hidden; flex: 1; max-width: 260px; }
-  .timer > div { height: 100%; background: var(--orange); width: 100%; transition: width .1s linear; }
-  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-  .tile { aspect-ratio: 1; font-size: 2.2rem; font-weight: 600; background: #fff; border: 2px solid var(--line); color: var(--ink); }
-  .tile.hit { background: var(--green); color: #fff; border-color: var(--green); }
-  .tile.miss { animation: shake .3s; background: #FBE3E3; border-color: var(--red); }
-  @keyframes shake { 25% { transform: translateX(-5px);} 75% { transform: translateX(5px);} }
-  .word { font-size: 3.4rem; font-weight: 700; text-align: center; padding: 40px 0; }
-  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .choices button { padding: 24px; font-size: 1.5rem; font-weight: 700; color: #fff; }
-  .real { background: var(--teal); } .alien { background: #7A5CC8; }
-  .progress { color: var(--muted); font-size: .9rem; }
-  .band { border-radius: var(--radius); padding: 22px 26px; margin-bottom: 20px; }
-  .band.low { background: #E1F4E8; } .band.medium { background: #FFF0D6; } .band.high { background: #FDE3DA; }
-  .bar { height: 18px; background: var(--line); border-radius: 10px; overflow: hidden; }
-  .bar > div { height: 100%; background: var(--teal); }
-  .skill { margin: 14px 0; }
-  .note { background: var(--teal-soft); border-radius: 14px; padding: 14px 18px; margin: 16px 0; }
-  .disclaimer { font-size: .85rem; color: var(--muted); margin-top: 20px; }
-  .hidden { display: none; }
-  @media (max-width: 560px) { .grid { grid-template-columns: repeat(4, 1fr); } .word { font-size: 2.6rem; } }
+:root{
+  --ink:#1D2645;--muted:#5D6785;--card:#fff;--line:#E7E2F3;
+  --teal:#0E9384;--teal-d:#0B7468;--teal-s:#D5F3EE;--sun:#FFB020;--orange:#F07A3A;--red:#E04F5F;
+  --green:#2FA866;--purple:#7B61D9;--blue:#3D8BFD;--pink:#F46FA6;
+  --r:22px;--shadow:0 10px 30px rgba(40,50,110,.12),0 2px 6px rgba(40,50,110,.06);
+  --font:"Lexend","Noto Sans Devanagari","Noto Sans Telugu",Verdana,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{min-height:100%;background:linear-gradient(180deg,#A9DCFF 0%,#D9F0FF 38%,#FFF4DC 100%) fixed}
+html,body{margin:0;min-height:100%}
+body{font-family:var(--font);color:var(--ink);font-size:19px;line-height:1.5;letter-spacing:.015em;
+  background:transparent;overflow-x:hidden}
+.sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.85;filter:blur(.3px);animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:55%;height:150%;left:15%;top:-60%}.cloud::after{width:40%;height:120%;right:12%;top:-40%}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+.wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:14px 16px 60px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem}
+.brand .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--blue));display:grid;place-items:center;font-size:1.4rem;box-shadow:var(--shadow)}
+.pill{background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;box-shadow:var(--shadow);display:inline-flex;gap:6px;align-items:center}
+.card{background:var(--card);border-radius:var(--r);padding:28px;box-shadow:var(--shadow);animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.96) translateY(8px);opacity:0}}
+h1{font-size:2.1rem;margin:0 0 6px;line-height:1.2}h2{margin:0 0 8px;line-height:1.25}h3{margin:22px 0 10px}
+.muted{color:var(--muted)}.small{font-size:.85rem}.center{text-align:center}
+button{font:inherit;cursor:pointer;border:none;border-radius:16px;transition:transform .1s,filter .15s,box-shadow .15s;color:inherit}
+button:active:not([disabled]){transform:scale(.94)}
+button[disabled]{cursor:default}
+button:focus-visible,input:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
+.btn{background:linear-gradient(180deg,#14A898,var(--teal));color:#fff;padding:14px 30px;font-weight:700;font-size:1.1rem;box-shadow:0 5px 0 var(--teal-d)}
+.btn:hover{filter:brightness(1.07)}.btn:active{box-shadow:0 1px 0 var(--teal-d);transform:translateY(4px)}
+.btn.sun{background:linear-gradient(180deg,#FFC24D,var(--sun));color:#4A3200;box-shadow:0 5px 0 #D18A00}
+.ghost{background:#fff;color:var(--teal-d);border:2px solid var(--teal);padding:8px 16px;font-size:.95rem;font-weight:600}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+label{font-weight:600}
+input[type=number],input[type=text]{font:inherit;padding:10px 14px;border-radius:12px;border:2px solid var(--line);width:100%}
+.seg{display:inline-flex;background:#F2F0FA;border-radius:12px;padding:3px;gap:3px}
+.seg button{padding:6px 12px;font-size:.85rem;border-radius:10px;background:transparent;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.chip{padding:12px 16px;border-radius:16px;border:2px solid var(--line);background:#fff;font-weight:600;display:flex;gap:10px;align-items:center;text-align:left}
+.chip[aria-pressed=true]{border-color:var(--teal);background:var(--teal-s)}
+.chip .em{font-size:1.6rem}
+.q{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
+/* ---------- owl ---------- */
+.owl-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px}
+.owl{font-size:4rem;line-height:1;animation:bob 2.2s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));cursor:pointer;background:none;padding:0}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+.bubble{position:relative;background:#fff;border-radius:20px;padding:14px 18px;box-shadow:var(--shadow);font-weight:600;flex:1}
+.bubble::before{content:"";position:absolute;left:-10px;bottom:18px;border:10px solid transparent;border-right-color:#fff;border-left:0}
+/* ---------- map ---------- */
+.map{position:relative;background:linear-gradient(180deg,#5EC4F2,#3FA9E0);border-radius:28px;padding:26px 18px;box-shadow:var(--shadow);overflow:hidden;min-height:420px}
+.map::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(255,255,255,.25) 0 2px,transparent 3px) 0 0/38px 38px;opacity:.6;pointer-events:none}
+.path{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.islands{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:26px 10px;z-index:1}
+.island{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;padding:0}
+.island .blob{width:96px;height:96px;border-radius:48% 52% 45% 55%/55% 45% 55% 45%;display:grid;place-items:center;font-size:2.6rem;
+  background:radial-gradient(circle at 35% 30%,#FFF3C4,#F6D27A 60%,#D9A845);box-shadow:0 8px 0 #2D8FC2,0 12px 18px rgba(0,0,0,.18);position:relative}
+.island .blob::after{content:"";position:absolute;inset:6px;border-radius:inherit;background:radial-gradient(circle at 50% 35%,#8FDB7A,#52B85B);z-index:-0;opacity:.95}
+.island .blob span{position:relative;z-index:1}
+.island .name{font-size:.78rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35);text-align:center;max-width:110px;line-height:1.2}
+.island.locked .blob{filter:grayscale(.85) brightness(.9);opacity:.75}
+.island.current .blob{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.1);box-shadow:0 8px 0 #2D8FC2,0 0 0 10px rgba(255,255,255,.45)}}
+.island .badge{position:absolute;top:-8px;right:-8px;font-size:1.4rem;z-index:2}
+/* ---------- games ---------- */
+.hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px}
+.target{font-size:2.6rem;font-weight:800;background:var(--teal-s);padding:0 22px;border-radius:14px;display:inline-block}
+.timer{height:14px;background:#EEE9F8;border-radius:10px;overflow:hidden;flex:1;max-width:260px}
+.timer>div{height:100%;background:linear-gradient(90deg,var(--sun),var(--orange));width:100%;transition:width .1s linear}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.tile{aspect-ratio:1;font-size:2.3rem;font-weight:700;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.ok{background:#DDF5E7!important;border-color:var(--green)!important;box-shadow:0 4px 0 var(--green)!important}
+.tile.ok{background:var(--green)!important;color:#fff}
+.bad{background:#FDE4E7!important;border-color:var(--red)!important;box-shadow:0 4px 0 var(--red)!important;animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.word{font-size:3.6rem;font-weight:800;text-align:center;padding:30px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two button{padding:22px;font-size:1.4rem;font-weight:800;color:#fff;border:4px solid transparent}
+.c-teal{background:var(--teal);box-shadow:0 6px 0 var(--teal-d)}.c-purple{background:var(--purple);box-shadow:0 6px 0 #5A43B0}
+.c-green{background:var(--green);box-shadow:0 6px 0 #1F7E4A}.c-orange{background:var(--orange);box-shadow:0 6px 0 #BE5520}
+.c-blue{background:var(--blue);box-shadow:0 6px 0 #2366CC}
+.speaker{font-size:4rem;text-align:center;padding:8px 0;animation:bob 1.6s ease-in-out infinite}
+.pics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pic{font-size:3.4rem;padding:16px 0;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.letters{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.letter{font-size:3rem;font-weight:800;padding:18px 0;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.slots{display:flex;justify-content:center;gap:10px;margin:14px 0 24px}
+.slot{min-width:78px;height:84px;border-bottom:6px solid var(--teal);font-size:2.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;background:#F6FBFA;border-radius:12px 12px 0 0}
+.slot.ok{color:var(--green);border-color:var(--green)}.slot.bad{color:var(--red);border-color:var(--red);animation:none}
+.units{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.unit{min-width:84px;padding:12px 18px;font-size:2.2rem;font-weight:700;background:var(--teal-s);border:3px solid var(--teal);box-shadow:0 4px 0 var(--teal)}
+.unit[disabled]{opacity:.3}
+.pads{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:420px;margin:0 auto}
+.pad{font-size:3.6rem;padding:20px 0;border:4px solid transparent;filter:saturate(.55) brightness(.97);box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.pad.lit{filter:none;transform:scale(1.08);border-color:var(--ink);box-shadow:0 0 26px rgba(0,0,0,.25)}
+.dotbox{position:relative;height:240px;background:#0F1B3D;border-radius:20px;margin:6px 0 18px;overflow:hidden}
+.dot{position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFE9A8,var(--sun));box-shadow:0 0 14px rgba(255,190,60,.8)}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.num{font-size:2.4rem;font-weight:800;padding:14px 0;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.bignum{font-size:4.2rem;font-weight:800;padding:34px 0;color:#fff}
+.stage{height:300px;border-radius:24px;background:linear-gradient(180deg,#1C2C66,#3A2F7A);display:grid;place-items:center;font-size:7rem;user-select:none;cursor:pointer;width:100%;box-shadow:inset 0 -10px 30px rgba(0,0,0,.3)}
+.stage .stim{animation:pop .15s}
+.progress{color:var(--muted);font-size:.85rem}
+.float{position:fixed;font-weight:800;font-size:1.4rem;color:var(--sun);pointer-events:none;animation:rise 0.9s ease-out forwards;z-index:9;text-shadow:0 2px 0 #fff}
+@keyframes rise{to{transform:translateY(-60px);opacity:0}}
+.confetti{position:fixed;top:-30px;font-size:1.7rem;pointer-events:none;animation:fall 2.4s linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(600deg)}}
+/* ---------- report ---------- */
+.report h2{font-size:1.5rem}
+.cond{border-radius:20px;padding:20px;border:2px solid var(--line);margin-bottom:16px;display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center}
+.cond.b-unlikely{background:#F0FAF4;border-color:#BFE6CF}.cond.b-possible{background:#FFF9E8;border-color:#F6DE9C}
+.cond.b-likely{background:#FFF1E8;border-color:#F7C3A3}.cond.b-very_likely{background:#FDEDEF;border-color:#F3B3BB}
+.gauge text{font-family:var(--font)}
+.tag{display:inline-block;border-radius:999px;padding:3px 12px;font-weight:700;font-size:.85rem;color:#fff}
+.t-unlikely{background:var(--green)}.t-possible{background:#D9A100}.t-likely{background:var(--orange)}.t-very_likely{background:var(--red)}
+.when{background:#fff;border-radius:14px;padding:12px 14px;margin-top:10px;border-left:5px solid var(--teal)}
+.skill{margin:12px 0}
+.bar{height:16px;background:#EEEAF6;border-radius:10px;overflow:hidden;position:relative}
+.bar>div{height:100%;border-radius:10px}
+.note{background:var(--teal-s);border-radius:14px;padding:12px 16px;margin:12px 0;font-size:.95rem}
+.warn{background:#FFF3D6;border-radius:14px;padding:12px 16px;margin:12px 0;font-size:.95rem}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600}
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.plan .p{background:#F8F7FD;border-radius:16px;padding:16px}
+.plan ul{margin:8px 0 10px;padding-left:20px;font-size:.92rem}
+.steps{counter-reset:s;display:grid;gap:10px}
+.steps div{background:#F8F7FD;border-radius:14px;padding:12px 14px 12px 52px;position:relative;font-size:.93rem}
+.steps div::before{counter-increment:s;content:counter(s);position:absolute;left:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--purple);color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px}
+.tabs button{padding:8px 16px;border-radius:999px;background:#F2F0FA;font-weight:700;font-size:.9rem;color:var(--muted)}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.disclaimer{font-size:.8rem;color:var(--muted);margin-top:18px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}.islands{grid-template-columns:repeat(3,1fr)}.tiles{grid-template-columns:repeat(4,1fr)}
+  .cond{grid-template-columns:1fr}.word{font-size:2.6rem}.letters,.nums{grid-template-columns:repeat(2,1fr)}.island .blob{width:80px;height:80px}}
+@media print{.sky,.topbar,.noprint{display:none!important}body{background:#fff}.card{box-shadow:none;padding:0}.tabpane{display:block!important}.cond{break-inside:avoid}}
 </style>
 </head>
 <body>
-<main id="app" aria-live="polite"></main>
+<div class="sky" aria-hidden="true" id="sky"></div>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="logo">🦉</div><span>Word Wizards</span></div>
+    <div class="row">
+      <span class="pill" id="coins" title="Coins" hidden>🪙 <b id="coinN">0</b></span>
+      <button class="ghost" id="mute" aria-pressed="false">🔊</button>
+    </div>
+  </div>
+  <main id="app" aria-live="polite"></main>
+</div>
 
-<script src="/static/content.js"></script>
 <script>
+/* =====================================================================
+   Word Wizards — game-based screener for dyslexia, dyscalculia and attention signs
+   Games collect accuracy, speed and every mistake; app/scoring.py builds the report.
+   ===================================================================== */
+let CONTENT = {}, AUDIO = {};
 const app = document.getElementById("app");
-const state = { lang: "en", age: 9, rounds: [] };
-const C = () => CONTENT[state.lang];
-const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const S = { lang: "en", name: "", age: 9, grade: "", modules: { reading: true, numbers: true, attention: true },
+            q: {}, rounds: [], done: new Set(), coins: 0, practice: false, report: null };
+const C = () => CONTENT[S.lang];
+const UI = () => C().ui;
+const $ = id => document.getElementById(id);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const el = (html) => { app.innerHTML = html; return app; };
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const render = html => { app.innerHTML = html; window.scrollTo({ top: 0, behavior: "smooth" }); };
+const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+                set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
 
-/* ---------- Home ---------- */
-function home() {
-  const ui = C().ui;
-  document.documentElement.lang = state.lang;
-  el(`
-    <div class="card">
-      <h1>${ui.title}</h1>
-      <p class="muted">${ui.subtitle}</p>
-      <div class="row langs" role="group" aria-label="Language">
-        ${Object.entries(CONTENT).map(([k, v]) =>
-          `<button data-lang="${k}" aria-pressed="${k === state.lang}">${v.name}</button>`).join("")}
+/* ------------------------- clouds ------------------------- */
+for (let i = 0; i < 6; i++) {
+  const c = document.createElement("div"); c.className = "cloud";
+  const w = 90 + Math.random() * 120; c.style.width = w + "px"; c.style.height = w * .32 + "px";
+  c.style.top = 5 + Math.random() * 55 + "%"; c.style.animationDuration = 60 + Math.random() * 60 + "s";
+  c.style.animationDelay = -Math.random() * 90 + "s"; $("sky").appendChild(c);
+}
+
+/* ------------------------- sound effects (synthesised: no files, no copyright) ------------------------- */
+const SFX = (() => {
+  let ctx = null, muted = store.get("muted", false);
+  const ac = () => (ctx ||= new (window.AudioContext || window.webkitAudioContext)());
+  function note(f, t, d, type = "sine", v = .16) {
+    if (muted) return; const c = ac(), o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.value = f; const s = c.currentTime + t;
+    g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(v, s + .01); g.gain.exponentialRampToValueAtTime(.001, s + d);
+    o.connect(g).connect(c.destination); o.start(s); o.stop(s + d + .05);
+  }
+  return {
+    get muted() { return muted; }, toggle() { muted = !muted; store.set("muted", muted); return muted; },
+    click: () => note(700, 0, .05, "triangle", .1),
+    good: () => { note(784, 0, .1); note(1175, .08, .18); },
+    bad: () => { note(233, 0, .16, "triangle", .12); note(196, .1, .2, "triangle", .1); },
+    coin: () => { note(988, 0, .07, "square", .05); note(1319, .06, .14, "square", .05); },
+    jingle: () => [523, 659, 784, 1047, 880, 1047].forEach((f, i) => note(f, i * .12, .2, "triangle", .13)),
+    fanfare: () => [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => note(f, i * .14, .3, "square", .06)),
+    whoosh: () => { for (let i = 0; i < 8; i++) note(300 + i * 90, i * .025, .06, "sine", .05); },
+    pad: i => note([392, 494, 587, 698][i], 0, .42, "sine", .2),
+  };
+})();
+document.addEventListener("click", e => { const b = e.target.closest("button"); if (b && !b.classList.contains("ans")) SFX.click(); }, true);
+const paintMute = () => { $("mute").textContent = SFX.muted ? "🔇" : "🔊"; $("mute").setAttribute("aria-pressed", SFX.muted); $("mute").setAttribute("aria-label", SFX.muted ? "Sound off" : "Sound on"); };
+$("mute").onclick = () => { SFX.toggle(); paintMute(); }; paintMute();
+
+/* ------------------------- speech: pre-generated mp3 (tools/gen_audio.py), browser voice as backup ------------------------- */
+let currentAudio = null;
+function say(text) {
+  return new Promise(res => {
+    if (SFX.muted) return res();
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    speechSynthesis?.cancel?.();
+    const src = (AUDIO[S.lang] || {})[text];
+    const guard = setTimeout(res, Math.min(9000, 1500 + text.length * 90));
+    const done = () => { clearTimeout(guard); res(); };
+    if (src) { const a = new Audio(src); currentAudio = a; a.onended = done; a.onerror = () => voice(text, done); a.play().catch(() => voice(text, done)); }
+    else voice(text, done);
+  });
+}
+function voice(text, done) {
+  if (!("speechSynthesis" in window)) return done();
+  const u = new SpeechSynthesisUtterance(text.replace(/[\u{1F000}-\u{1FAFF}☀-➿️]/gu, ""));
+  u.lang = { en: "en-IN", hi: "hi-IN", te: "te-IN" }[S.lang]; u.rate = .85; u.onend = done; u.onerror = done; speechSynthesis.speak(u);
+}
+
+/* ------------------------- rewards ------------------------- */
+function coinPop(x, y) {
+  S.coins++; $("coinN").textContent = S.coins; SFX.coin();
+  const f = document.createElement("div"); f.className = "float"; f.textContent = "+1 🪙";
+  f.style.left = (x ?? innerWidth / 2) + "px"; f.style.top = (y ?? innerHeight / 2) + "px";
+  document.body.appendChild(f); setTimeout(() => f.remove(), 900);
+}
+function confetti(n = 36) {
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement("div"); s.className = "confetti"; s.textContent = pick(["🎉", "⭐", "✨", "🎈", "🪙"]);
+    s.style.left = Math.random() * 100 + "vw"; s.style.animationDelay = Math.random() * .9 + "s";
+    document.body.appendChild(s); setTimeout(() => s.remove(), 3400);
+  }
+}
+const where = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2 - 20, r.top]; };
+
+/* ------------------------- round recording: every answer, every mistake ------------------------- */
+function newRound(game, skill) { return { game, skill, clicks: 0, hits: 0, misses: 0, rts: [], mistakes: [] }; }
+function hit(R, rt, el) { R.clicks++; R.hits++; if (rt != null) R.rts.push(rt); SFX.good(); if (el) coinPop(...where(el)); }
+function miss(R, rt, item, expected, chosen) { R.clicks++; R.misses++; if (rt != null) R.rts.push(rt); R.mistakes.push({ item, expected, chosen, rt_ms: rt && Math.round(rt) }); SFX.bad(); }
+function endRound(R, extra = {}) { const { rts, ...rest } = R; return { ...rest, mean_rt_ms: avg(rts), ...extra }; }
+function save(round) { if (!S.practice) S.rounds.push(round); }
+
+/* =====================================================================
+   GAMES
+   ===================================================================== */
+const GAMES = [
+  { id: "mirror",   module: "reading",   icon: "🔍", title: u => u.mirrorTitle, instr: u => u.mirrorInstr, skill: "visual",      run: mirrorGame },
+  { id: "rhyme",    module: "reading",   icon: "🚀", title: u => u.rhymeTitle,  instr: u => u.rhymeInstr,  skill: "phonology",   run: rhymeGame },
+  { id: "letters",  module: "reading",   icon: "🕵️", title: u => u.letterTitle, instr: u => u.letterInstr, skill: "lettersound", run: lettersGame },
+  { id: "realword", module: "reading",   icon: "👽", title: u => u.realTitle,   instr: u => u.realInstr,   skill: "decoding",    run: realwordGame },
+  { id: "memory",   module: "reading",   icon: "🧠", title: u => u.memTitle,    instr: u => u.memInstr,    skill: "memory",      run: memoryGame },
+  { id: "naming",   module: "reading",   icon: "⚡", title: u => u.nameTitle,   instr: u => u.nameInstr,   skill: "naming",      run: namingGame },
+  { id: "spell",    module: "reading",   icon: "🧩", title: u => u.spellTitle,  instr: u => u.spellInstr,  skill: "spelling",    run: spellGame },
+  { id: "dots",     module: "numbers",   icon: "🔵", title: u => u.dotsTitle,   instr: u => u.dotsInstr,   skill: "numsense",    run: dotsGame },
+  { id: "compare",  module: "numbers",   icon: "⚖️", title: u => u.cmpTitle,    instr: u => u.cmpInstr,    skill: "numcompare",  run: compareGame },
+  { id: "gonogo",   module: "attention", icon: "⭐", title: u => u.gngTitle,    instr: u => u.gngInstr,    skill: "attention",   run: gonogoGame },
+];
+const activeGames = () => GAMES.filter(g => S.modules[g.module]);
+
+function gameCard(inner, label) {
+  render(`<div class="card">${label ? `<p class="progress">${label}</p>` : ""}${inner}</div>`);
+}
+
+/* ---------- 1. Mirror Hunt: look-alike letters ---------- */
+async function mirrorGame() {
+  for (const [i, r] of C().mirror.entries()) save(await mirrorRound(r, `${i + 1} / ${C().mirror.length}`));
+}
+function mirrorRound({ target, distractors }, label) {
+  const TILES = 20, TARGETS = 6, SECONDS = S.age < 8 ? 16 : 13;
+  const items = shuffle([...Array(TARGETS).fill(target), ...Array.from({ length: TILES - TARGETS }, () => pick(distractors))]);
+  const R = newRound("mirror", "visual");
+  return new Promise(res => {
+    gameCard(`<div class="hud"><div style="font-weight:700">${UI().find} <span class="target">${target}</span></div>
+      <div class="timer" aria-label="${UI().timeLeft}"><div id="tbar"></div></div></div>
+      <div class="tiles">${items.map((t, k) => `<button class="tile ans" data-k="${k}">${t}</button>`).join("")}</div>`, `${UI().mirrorTitle} · ${label}`);
+    let ended = false, found = 0, last = performance.now(); const t0 = last;
+    const finish = () => { if (ended) return; ended = true; clearInterval(tick); res(endRound(R)); };
+    app.querySelectorAll(".tile").forEach(b => b.onclick = () => {
+      if (ended) return; const now = performance.now(), rt = now - last; last = now; b.disabled = true;
+      if (items[b.dataset.k] === target) { b.classList.add("ok"); hit(R, rt, b); if (++found === TARGETS) setTimeout(finish, 400); }
+      else { b.classList.add("bad"); miss(R, rt, target, target, items[b.dataset.k]); }
+    });
+    const tick = setInterval(() => { const left = 1 - (performance.now() - t0) / (SECONDS * 1000); $("tbar").style.width = Math.max(left, 0) * 100 + "%"; if (left <= 0) finish(); }, 100);
+  });
+}
+
+/* ---------- shared: one answer only, then show right/wrong ---------- */
+async function oneTry(btns, correctId) {
+  window.__correct = correctId;   // test hook (used by automated tests only)
+  const t0 = performance.now();
+  const chosen = await new Promise(res => {
+    btns.forEach(b => b.onclick = () => res(b.id));
+    document.onkeydown = e => { if (e.key === "ArrowLeft") res(btns[0].id); if (e.key === "ArrowRight") res(btns[1].id); };
+  });
+  document.onkeydown = null; btns.forEach(b => b.disabled = true);
+  $(chosen).classList.add(chosen === correctId ? "ok" : "bad"); if (chosen !== correctId) $(correctId).classList.add("ok");
+  return { chosen, rt: performance.now() - t0, el: $(chosen) };
+}
+
+/* ---------- 2. Rhyme Rocket: hearing sounds (no reading needed) ---------- */
+async function rhymeGame() {
+  const pairs = shuffle(C().rhyme).slice(0, 10);
+  for (let r = 0; r < 2; r++) save(await rhymeRound(pairs.slice(r * 5, r * 5 + 5), r + 1));
+}
+async function rhymeRound(pairs, n) {
+  const u = UI(), R = newRound("rhyme", "phonology");
+  for (const [i, p] of pairs.entries()) {
+    gameCard(`<div class="speaker" aria-hidden="true">🔊</div><p class="center muted" id="st">${u.listen}</p>
+      <div class="two"><button class="c-green ans" id="y" disabled>👍 ${u.yes}</button><button class="c-orange ans" id="n" disabled>👎 ${u.no}</button></div>
+      <p class="center" style="margin-top:16px"><button class="ghost" id="again" disabled>🔁 ${u.replay}</button></p>`, `${u.rhymeTitle} · ${n}/2 · ${i + 1}/${pairs.length}`);
+    const play = async () => { ["y", "n", "again"].forEach(id => $(id).disabled = true); await say(p.a); await sleep(450); await say(p.b); ["y", "n", "again"].forEach(id => $(id).disabled = false); $("st").textContent = ""; };
+    await play(); $("again").onclick = play;
+    const { chosen, rt, el } = await oneTry([$("y"), $("n")], p.rhymes ? "y" : "n");
+    (chosen === "y") === p.rhymes ? hit(R, rt, el) : miss(R, rt, `${p.a} – ${p.b}`, p.rhymes ? u.yes : u.no, p.rhymes ? u.no : u.yes);
+    await sleep(700);
+  }
+  return endRound(R);
+}
+
+/* ---------- 3. Sound Detective: hear a sound, tap the letter ---------- */
+async function lettersGame() {
+  const u = UI(), R = newRound("letters", "lettersound"), items = shuffle(C().letters || []).slice(0, 8);
+  for (const [i, it] of items.entries()) {
+    const opts = shuffle([it.letter, ...it.distractors.slice(0, 3)]);
+    gameCard(`<div class="speaker" aria-hidden="true">👂</div>
+      <div class="letters">${opts.map((o, k) => `<button class="letter ans" id="l${k}" disabled>${o}</button>`).join("")}</div>
+      <p class="center" style="margin-top:16px"><button class="ghost" id="again">🔁 ${u.replay}</button></p>`, `${u.letterTitle} · ${i + 1}/${items.length}`);
+    const btns = opts.map((_, k) => $("l" + k));
+    await say(it.say); btns.forEach(b => b.disabled = false); $("again").onclick = () => say(it.say);
+    const { chosen, rt, el } = await oneTry(btns, "l" + opts.indexOf(it.letter));
+    const ch = opts[+chosen.slice(1)];
+    ch === it.letter ? hit(R, rt, el) : miss(R, rt, `sound "${it.say}"`, it.letter, ch);
+    await sleep(700);
+  }
+  save(endRound(R));
+}
+
+/* ---------- 4. Real or Alien?: decoding new words ---------- */
+async function realwordGame() {
+  const { real, alien } = C().realword, RL = shuffle(real), AL = shuffle(alien);
+  for (let r = 0; r < 2; r++) {
+    const words = shuffle([...RL.slice(r * 3, r * 3 + 3).map(w => [w, true]), ...AL.slice(r * 3, r * 3 + 3).map(w => [w, false])]);
+    save(await realwordRound(words, r + 1));
+  }
+}
+async function realwordRound(words, n) {
+  const u = UI(), R = newRound("realword", "decoding");
+  for (const [i, [word, isReal]] of words.entries()) {
+    gameCard(`<div class="word">${word}</div>
+      <div class="two"><button class="c-teal ans" id="r">✔ ${u.real}</button><button class="c-purple ans" id="a">👽 ${u.alien}</button></div>
+      <p class="progress center">← ${u.real} &nbsp;|&nbsp; ${u.alien} →</p>`, `${u.realTitle} · ${n}/2 · ${i + 1}/${words.length}`);
+    const { chosen, rt, el } = await oneTry([$("r"), $("a")], isReal ? "r" : "a");
+    (chosen === "r") === isReal ? hit(R, rt, el) : miss(R, rt, word, isReal ? u.real : u.alien, isReal ? u.alien : u.real);
+    await sleep(600);
+  }
+  return endRound(R);
+}
+
+/* ---------- 5. Echo Memory: Simon-says sequences ---------- */
+const PADS = [{ e: "🐸", c: "#BFEBD0" }, { e: "🐱", c: "#FFE0B8" }, { e: "🐶", c: "#DCD3FA" }, { e: "🐮", c: "#CFE7FB" }];
+async function memoryGame() {
+  const u = UI(), R = newRound("memory", "memory"); let span = 0;
+  for (const len of [2, 3, 4, 5, 6]) {
+    const seq = Array.from({ length: len }, () => Math.floor(Math.random() * 4));
+    gameCard(`<h2 class="center" id="st">👀 ${u.watch}</h2>
+      <div class="pads">${PADS.map((p, i) => `<button class="pad ans" data-i="${i}" style="background:${p.c}" disabled>${p.e}</button>`).join("")}</div>`, `${u.memTitle} · ${len - 1}/5`);
+    const pads = [...app.querySelectorAll(".pad")]; await sleep(700);
+    for (const i of seq) { pads[i].classList.add("lit"); SFX.pad(i); await sleep(560); pads[i].classList.remove("lit"); await sleep(200); }
+    window.__seq = seq;   // test hook
+    $("st").textContent = "👉 " + u.yourTurn; pads.forEach(p => p.disabled = false);
+    let pos = 0, t0 = performance.now(), failed = false;
+    await new Promise(res => pads.forEach(p => p.onclick = () => {
+      const i = +p.dataset.i, rt = performance.now() - t0; t0 = performance.now();
+      p.classList.add("lit"); SFX.pad(i); setTimeout(() => p.classList.remove("lit"), 200);
+      if (i === seq[pos]) { R.clicks++; R.hits++; R.rts.push(rt); if (++pos === seq.length) { coinPop(...where(p)); res(); } }
+      else { failed = true; miss(R, rt, `${len}-step sequence`, PADS[seq[pos]].e, PADS[i].e); res(); }
+    }));
+    pads.forEach(x => x.disabled = true); if (!failed) span = len; await sleep(800);
+  }
+  save(endRound(R, { span }));
+}
+
+/* ---------- 6. Quick Match: hear a word, tap its picture fast ---------- */
+async function namingGame() {
+  for (let r = 0; r < 2; r++) { const board = shuffle(C().naming).slice(0, 6); save(await namingRound(board, shuffle(board).slice(0, 5), r + 1)); }
+}
+async function namingRound(board, trials, n) {
+  const u = UI(), R = newRound("naming", "naming");
+  for (const [i, t] of trials.entries()) {
+    gameCard(`<div class="speaker" aria-hidden="true">🔊</div>
+      <div class="pics">${board.map((b, k) => `<button class="pic ans" id="p${k}" aria-label="${b.word}" disabled>${b.pic}</button>`).join("")}</div>
+      <p class="center" style="margin-top:16px"><button class="ghost" id="again">🔁 ${u.replay}</button></p>`, `${u.nameTitle} · ${n}/2 · ${i + 1}/${trials.length}`);
+    const btns = board.map((_, k) => $("p" + k));
+    await say(t.word); btns.forEach(b => b.disabled = false); $("again").onclick = () => say(t.word);
+    const { chosen, rt, el } = await oneTry(btns, "p" + board.indexOf(t));
+    const ch = board[+chosen.slice(1)];
+    ch === t ? hit(R, rt, el) : miss(R, rt, t.word, `${t.pic} ${t.word}`, `${ch.pic} ${ch.word}`);
+    await sleep(700);
+  }
+  return endRound(R);
+}
+
+/* ---------- 7. Spell Builder: hear a word, build it (one look-alike trap tile, no undo) ---------- */
+async function spellGame() {
+  const u = UI(), R = newRound("spell", "spelling"), words = shuffle(C().spell).slice(0, 4);
+  for (const [i, w] of words.entries()) {
+    const tiles = shuffle([...w.units, w.trap]);
+    gameCard(`<div class="speaker" aria-hidden="true">🔊</div>
+      <div class="slots">${w.units.map((_, k) => `<div class="slot" id="s${k}"></div>`).join("")}</div>
+      <div class="units">${tiles.map((t, k) => `<button class="unit ans" data-k="${k}" disabled>${t}</button>`).join("")}</div>
+      <p class="center" style="margin-top:18px" id="foot"><button class="ghost" id="again">🔁 ${u.replay}</button></p>`, `${u.spellTitle} · ${i + 1}/${words.length}`);
+    const btns = [...app.querySelectorAll(".unit")];
+    await say(w.word); btns.forEach(b => b.disabled = false); $("again").onclick = () => say(w.word);
+    let pos = 0, t0 = performance.now(); const picked = [];
+    await new Promise(res => btns.forEach(b => b.onclick = () => {
+      SFX.click(); const rt = performance.now() - t0; t0 = performance.now(); b.disabled = true;
+      picked.push({ unit: tiles[b.dataset.k], rt }); $("s" + pos).textContent = tiles[b.dataset.k];
+      if (++pos === w.units.length) res();
+    }));
+    btns.forEach(b => b.disabled = true);
+    picked.forEach((p, k) => {
+      const ok = p.unit === w.units[k]; $("s" + k).classList.add(ok ? "ok" : "bad");
+      R.clicks++; R.rts.push(p.rt);
+      if (ok) R.hits++; else { R.misses++; R.mistakes.push({ item: w.word, expected: w.units[k], chosen: p.unit, rt_ms: Math.round(p.rt) }); }
+    });
+    if (picked.every((p, k) => p.unit === w.units[k])) { SFX.good(); coinPop(...where($("s0"))); }
+    else { SFX.bad(); $("foot").innerHTML = `<span style="font-size:2.2rem;font-weight:800;color:var(--green)">✔ ${w.units.join("")}</span>`; }
+    await sleep(1700);
+  }
+  save(endRound(R));
+}
+
+/* ---------- 8. Dot Flash: how many? (number sense / subitising) ---------- */
+async function dotsGame() {
+  const u = UI(), R = newRound("dots", "numsense");
+  const counts = shuffle([1, 2, 3, 4, ...shuffle([5, 6, 7, 8, 9]).slice(0, 4)]);
+  for (const [i, n] of counts.entries()) {
+    gameCard(`<div class="dotbox" id="box"></div><div class="nums" id="opts"></div>`, `${u.dotsTitle} · ${i + 1}/${counts.length}`);
+    const box = $("box"), W = box.clientWidth - 40, H = 200, pts = [];
+    while (pts.length < n) { const p = [10 + Math.random() * W, 10 + Math.random() * H]; if (pts.every(q => Math.hypot(p[0] - q[0], p[1] - q[1]) > 44)) pts.push(p); }
+    await sleep(500);
+    box.innerHTML = pts.map(p => `<div class="dot" style="left:${p[0]}px;top:${p[1]}px"></div>`).join("");
+    await sleep(S.age < 8 ? 1300 : 1000); box.innerHTML = `<div style="display:grid;place-items:center;height:100%;font-size:3rem;color:#fff">❓</div>`;
+    const opts = shuffle([...new Set([n, ...shuffle([n - 2, n - 1, n + 1, n + 2].filter(x => x >= 1 && x <= 10)).slice(0, 3)])]);
+    $("opts").innerHTML = opts.map((o, k) => `<button class="num ans" id="d${k}">${o}</button>`).join("");
+    const { chosen, rt, el } = await oneTry(opts.map((_, k) => $("d" + k)), "d" + opts.indexOf(n));
+    const ch = opts[+chosen.slice(1)];
+    ch === n ? hit(R, rt, el) : miss(R, rt, `${n} dots`, String(n), String(ch));
+    await sleep(650);
+  }
+  save(endRound(R));
+}
+
+/* ---------- 9. Bigger Number: symbolic number comparison (+ place value for older children) ---------- */
+async function compareGame() {
+  const u = UI(), R = newRound("compare", "numcompare"), pairs = [];
+  while (pairs.length < 10) { const a = 1 + Math.floor(Math.random() * 9), b = 1 + Math.floor(Math.random() * 9); if (a !== b) pairs.push([a, b]); }
+  if (S.age >= 8) pairs.push([47, 74], [91, 19], [36, 63], [58, 85]);
+  for (const [i, [a, b]] of shuffle(pairs).entries()) {
+    gameCard(`<div class="two"><button class="c-blue ans bignum" id="A">${a}</button><button class="c-purple ans bignum" id="B">${b}</button></div>`, `${u.cmpTitle} · ${i + 1}/${pairs.length}`);
+    const { chosen, rt, el } = await oneTry([$("A"), $("B")], a > b ? "A" : "B");
+    const ch = chosen === "A" ? a : b;
+    ch === Math.max(a, b) ? hit(R, rt, el) : miss(R, rt, `${a} vs ${b}`, String(Math.max(a, b)), String(ch));
+    await sleep(450);
+  }
+  save(endRound(R));
+}
+
+/* ---------- 10. Catch the Star: go / no-go (attention & impulse control) ---------- */
+async function gonogoGame() {
+  const u = UI(), GO = 24, NOGO = 8, SHOW = S.age < 8 ? 1100 : 900;
+  let seq = shuffle([...Array(GO).fill("go"), ...Array(NOGO).fill("nogo")]); if (seq[0] === "nogo") seq.push(seq.shift());
+  gameCard(`<button class="stage ans" id="stage" aria-label="${u.tapStar}"><span></span></button>
+    <p class="center muted" style="margin-top:12px">⭐ = ${u.tapStar} &nbsp;·&nbsp; 🌧️ = ✋ &nbsp;·&nbsp; Space ⌨️</p>`, u.gngTitle);
+  const stage = $("stage"), slot = stage.querySelector("span");
+  const R = { game: "gonogo", skill: "attention", clicks: 0, hits: 0, misses: 0, mistakes: [], go_total: GO, nogo_total: NOGO, omissions: 0, commissions: 0, go_rts: [] };
+  let active = null;
+  const tap = () => {
+    if (!active || active.tapped) return; active.tapped = true; R.clicks++;
+    const rt = performance.now() - active.t0;
+    if (active.kind === "go") { R.hits++; R.go_rts.push(rt); SFX.good(); coinPop(...where(stage)); slot.textContent = "✨"; }
+    else { R.misses++; R.commissions++; R.mistakes.push({ item: "rain cloud", expected: "no tap", chosen: "tapped", rt_ms: Math.round(rt) }); SFX.bad(); stage.classList.add("bad"); setTimeout(() => stage.classList.remove("bad"), 300); }
+  };
+  stage.onclick = tap; document.onkeydown = e => { if (e.code === "Space") { e.preventDefault(); tap(); } };
+  await sleep(900);
+  for (const kind of seq) {
+    active = { kind, t0: performance.now(), tapped: false };
+    slot.className = "stim"; slot.textContent = kind === "go" ? "⭐" : "🌧️";
+    await sleep(SHOW);
+    if (!active.tapped) { if (kind === "go") { R.misses++; R.omissions++; R.mistakes.push({ item: "star", expected: "tap", chosen: "missed", rt_ms: null }); } else R.hits++; }
+    active = null; slot.textContent = ""; await sleep(450 + Math.random() * 500);
+  }
+  document.onkeydown = null;
+  save({ ...R, mean_rt_ms: avg(R.go_rts) });
+}
+
+/* =====================================================================
+   SCREENS
+   ===================================================================== */
+const QUESTIONS = [
+  ["family_reading", "A parent or sibling had trouble learning to read or spell"],
+  ["speech_delay", "The child started speaking late or had speech therapy"],
+  ["teacher_reading", "The teacher says the child struggles with reading or spelling"],
+  ["letters_reverse", "The child often mixes up letters (b/d) or skips words"],
+  ["teacher_math", "The teacher says the child struggles with numbers or maths"],
+  ["attention_home", "The child finds it hard to sit still or stay focused"],
+];
+
+function setup() {
+  $("coins").hidden = true; document.documentElement.lang = S.lang;
+  const hist = store.get("ww_history", []);
+  render(`<div class="card">
+    <div class="owl-row"><button class="owl" aria-label="Ollie the owl">🦉</button>
+      <div class="bubble">Welcome! I'm <b>Ollie</b>. A grown-up sets things up, then the child plays 10 short games (about 12 minutes). You get a clear report at the end.</div></div>
+    <div class="grid2">
+      <div>
+        <h3 style="margin-top:0">👧 About the child</h3>
+        <label for="nm">First name (optional)</label><input id="nm" type="text" value="${S.name}" placeholder="e.g. Riya" maxlength="30">
+        <div class="grid2" style="margin-top:10px;gap:12px">
+          <div><label for="age">Age</label><input id="age" type="number" min="5" max="14" value="${S.age}"></div>
+          <div><label for="gr">Class</label><input id="gr" type="text" value="${S.grade}" placeholder="e.g. 3"></div>
+        </div>
+        <h3>🌐 Game language</h3>
+        <div class="row" role="group" aria-label="Language">${Object.entries(CONTENT).map(([k, v]) => `<button class="chip" data-lang="${k}" aria-pressed="${k === S.lang}">${v.name}</button>`).join("")}</div>
+        <h3>🧭 What to screen</h3>
+        <div style="display:grid;gap:10px">
+          ${[["reading", "📖", "Reading (dyslexia)", "7 games"], ["numbers", "🔢", "Numbers (dyscalculia)", "2 games"], ["attention", "🎯", "Attention signs", "1 game"]].map(([k, e, t, s]) =>
+            `<button class="chip" data-mod="${k}" aria-pressed="${S.modules[k]}" ${k === "reading" ? "disabled" : ""}><span class="em">${e}</span><span>${t}<br><span class="small muted">${s}${k === "reading" ? " · always on" : ""}</span></span></button>`).join("")}
+        </div>
       </div>
-      <p class="row" style="margin-top:24px">
-        <label for="age">${ui.age}</label>
-        <input id="age" type="number" min="5" max="17" value="${state.age}">
-      </p>
-      <button class="btn" id="start">${ui.start} ▶</button>
-    </div>`);
-  app.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { state.lang = b.dataset.lang; home(); });
-  document.getElementById("start").onclick = async () => {
-    state.age = parseInt(document.getElementById("age").value) || 9;
-    state.rounds = [];
-    for (const game of GAMES) await game();
-    results();
+      <div>
+        <h3 style="margin-top:0">📝 Quick questions for the grown-up</h3>
+        <p class="small muted" style="margin-top:-6px">These are known risk factors. They make the report more accurate.</p>
+        ${QUESTIONS.map(([k, t]) => `<div class="q"><span>${t}</span><span class="seg" data-q="${k}">${["yes", "no", "unsure"].map(v => `<button data-v="${v}" aria-pressed="${S.q[k] === v}">${v === "unsure" ? "Not sure" : v[0].toUpperCase() + v.slice(1)}</button>`).join("")}</span></div>`).join("")}
+        <label class="row small" style="margin-top:16px;font-weight:500;flex-wrap:nowrap;align-items:flex-start"><input type="checkbox" id="consent" style="width:22px;height:22px;flex:none"> <span>I am the child's parent, guardian or teacher. I understand this is a screening game, not a diagnosis. Results stay on this device.</span></label>
+      </div>
+    </div>
+    <p class="center" style="margin-top:22px"><button class="btn sun" id="go">🏝️ Start the adventure</button></p>
+    ${hist.length ? `<p class="center small"><button class="ghost" id="hist">📈 Past results (${hist.length})</button></p>` : ""}
+  </div>`);
+  app.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { read(); S.lang = b.dataset.lang; setup(); });
+  app.querySelectorAll("[data-mod]").forEach(b => b.onclick = () => { S.modules[b.dataset.mod] = !S.modules[b.dataset.mod]; b.setAttribute("aria-pressed", S.modules[b.dataset.mod]); });
+  app.querySelectorAll(".seg").forEach(s => s.querySelectorAll("button").forEach(b => b.onclick = () => {
+    S.q[s.dataset.q] = b.dataset.v; s.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  }));
+  function read() { S.name = $("nm").value.trim(); S.age = Math.max(5, Math.min(14, parseInt($("age").value) || 9)); S.grade = $("gr").value.trim(); }
+  $("go").onclick = () => {
+    read();
+    if (!$("consent").checked) { $("consent").parentElement.classList.add("bad"); $("consent").focus(); return; }
+    S.rounds = []; S.done = new Set(); S.coins = 0; $("coinN").textContent = 0; S.practice = false;
+    SFX.whoosh(); map(true);
+  };
+  if ($("hist")) $("hist").onclick = history;
+}
+
+/* ---------- island map ---------- */
+function map(first = false) {
+  $("coins").hidden = false;
+  const games = activeGames(), next = games.find(g => !S.done.has(g.id));
+  const u = UI();
+  const msg = first ? u.owlHello : next ? u.owlNext : u.owlDone;
+  render(`<div class="owl-row"><button class="owl" id="owl" aria-label="Hear again">🦉</button><div class="bubble">${msg}</div></div>
+    <div class="map">
+      <svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M5 18 C 30 5, 60 30, 95 15 S 70 55, 50 50 S 5 70, 20 85 S 80 95, 95 85" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-dasharray="2 2" fill="none"/></svg>
+      <div class="islands">${games.map(g => {
+        const done = S.done.has(g.id), cur = next && g.id === next.id;
+        return `<button class="island ${done ? "done" : cur ? "current" : "locked"}" data-g="${g.id}" ${cur ? "" : "disabled"} aria-label="${g.title(u)}${done ? " (done)" : ""}">
+          <div class="blob"><span>${g.icon}</span>${done ? `<span class="badge">⭐</span>` : !cur ? `<span class="badge">🔒</span>` : ""}</div>
+          <div class="name">${g.title(u)}</div></button>`; }).join("")}</div>
+    </div>
+    ${next ? `<p class="center" style="margin-top:18px"><button class="btn sun" id="play">▶ ${next.title(u)}</button></p>`
+           : `<p class="center" style="margin-top:18px"><button class="btn" id="fin">🏆 ${u.done}</button></p>`}
+    <p class="center progress">${S.done.size} / ${games.length} ⭐</p>`);
+  say(msg); $("owl").onclick = () => say(msg);
+  if (next) { const go = () => playGame(next); $("play").onclick = go; app.querySelector(`[data-g="${next.id}"]`).onclick = go; }
+  else $("fin").onclick = finale;
+}
+
+async function playGame(g) {
+  const u = UI(); SFX.jingle();
+  await new Promise(res => {
+    render(`<div class="card center"><div style="font-size:5rem;animation:bob 1.6s infinite">${g.icon}</div>
+      <h2>${g.title(u)}</h2><p style="font-size:1.15rem">${g.instr(u)}</p>
+      <div class="row" style="justify-content:center;margin-top:10px"><button class="ghost" id="hear">🔈 ${u.replay}</button><button class="btn" id="go">${u.start} ▶</button></div></div>`);
+    setTimeout(() => say(g.instr(u)), 700);
+    $("hear").onclick = () => say(g.instr(u)); $("go").onclick = res; $("go").focus();
+  });
+  await g.run();
+  if (S.practice) { SFX.fanfare(); confetti(20); await sleep(900); return showReport(S.report); }
+  S.done.add(g.id); SFX.fanfare(); confetti(18); await sleep(700); map();
+}
+
+async function finale() {
+  SFX.fanfare(); confetti(60);
+  render(`<div class="card center"><div style="font-size:6rem;animation:bob 1.4s infinite">🏆</div>
+    <h1>${UI().owlDone}</h1><p class="pill" style="font-size:1.3rem">🪙 ${S.coins}</p>
+    <p class="muted" style="margin-top:18px">Please hand the device back to the grown-up.</p>
+    <button class="btn" id="rep">📋 Show the report</button></div>`);
+  say(UI().owlDone);
+  $("rep").onclick = async () => {
+    render(`<div class="card center"><div class="owl" style="font-size:4rem">🦉</div><p>Preparing the report…</p></div>`);
+    try {
+      const r = await fetch("/api/report", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: S.name, age: S.age, grade: S.grade, language: S.lang, questionnaire: S.q, rounds: S.rounds }) });
+      if (!r.ok) throw new Error(await r.text());
+      S.report = await r.json();
+      const hist = store.get("ww_history", []);
+      hist.push({ date: new Date().toISOString(), name: S.name || "Child", lang: S.lang, age: S.age,
+                  idx: Object.fromEntries(Object.entries(S.report.conditions).map(([k, c]) => [k, c.index])) });
+      store.set("ww_history", hist.slice(-30));
+      showReport(S.report);
+    } catch (e) { render(`<div class="card"><h2>Could not create the report</h2><p class="muted">${e}</p><button class="btn" id="retry">Try again</button></div>`); $("retry").onclick = finale; }
   };
 }
 
-/* ---------- Intro card shown before each game ---------- */
-function intro(title, instr) {
-  return new Promise(res => {
-    el(`<div class="card" style="text-align:center">
-          <h2>${title}</h2><p>${instr}</p>
-          <button class="btn" id="go">${C().ui.start} ▶</button></div>`);
-    const b = document.getElementById("go"); b.focus(); b.onclick = res;
-  });
+/* =====================================================================
+   REPORT (for parents / teachers)
+   ===================================================================== */
+const BAND_COL = { unlikely: "#2FA866", possible: "#E0A800", likely: "#F07A3A", very_likely: "#E04F5F" };
+const concernCol = c => c < 25 ? BAND_COL.unlikely : c < 50 ? BAND_COL.possible : c < 75 ? BAND_COL.likely : BAND_COL.very_likely;
+const concernTxt = c => c < 25 ? "As expected" : c < 50 ? "A little below" : c < 75 ? "Below expected" : "Well below";
+const GAME_NAMES = Object.fromEntries(GAMES.map(g => [g.id, g]));
+const SKILL_GAME = Object.fromEntries(GAMES.map(g => [g.skill, g]));
+
+function gauge(index, band) {
+  const segs = [[0, 25, BAND_COL.unlikely], [25, 50, BAND_COL.possible], [50, 75, BAND_COL.likely], [75, 100, BAND_COL.very_likely]];
+  const pt = (v, r) => { const a = Math.PI * (1 - v / 100); return [100 + r * Math.cos(a), 100 - r * Math.sin(a)]; };
+  const arc = (a, b) => { const [x1, y1] = pt(a, 80), [x2, y2] = pt(b, 80); return `M${x1} ${y1} A80 80 0 0 1 ${x2} ${y2}`; };
+  const [nx, ny] = pt(index, 62);
+  return `<svg class="gauge" viewBox="0 0 200 120" width="210" role="img" aria-label="Likelihood index ${index} out of 100">
+    ${segs.map(([a, b, c]) => `<path d="${arc(a + .8, b - .8)}" stroke="${c}" stroke-width="18" fill="none" stroke-linecap="round"/>`).join("")}
+    <line x1="100" y1="100" x2="${nx}" y2="${ny}" stroke="#1D2645" stroke-width="5" stroke-linecap="round"><animate attributeName="x2" from="20" to="${nx}" dur=".9s" fill="freeze"/><animate attributeName="y2" from="100" to="${ny}" dur=".9s" fill="freeze"/></line>
+    <circle cx="100" cy="100" r="8" fill="#1D2645"/>
+    <text x="100" y="78" text-anchor="middle" font-size="22" font-weight="800" fill="#1D2645">${index}</text>
+    <text x="22" y="117" font-size="9" fill="#5D6785">0</text><text x="170" y="117" font-size="9" fill="#5D6785">100</text></svg>`;
 }
 
-/* ---------- Game 1: Mirror Hunt (visual discrimination) ---------- */
-async function mirrorGame() {
-  const ui = C().ui;
-  await intro(ui.mirrorTitle, ui.mirrorInstr);
-  for (const [i, r] of C().mirror.entries()) {
-    state.rounds.push(await mirrorRound(r, i + 1, C().mirror.length));
-  }
-}
+function showReport(r) {
+  S.practice = false; $("coins").hidden = true;
+  const conds = Object.entries(r.conditions);
+  const groups = {};
+  S.rounds.forEach(rd => (rd.mistakes || []).forEach(m => {
+    const key = `${rd.game}|${m.expected}|${m.chosen}`;
+    (groups[key] ||= { game: rd.game, expected: m.expected, chosen: m.chosen, items: new Set(), n: 0 }).n++; groups[key].items.add(m.item);
+  }));
+  const top = Object.values(groups).sort((a, b) => b.n - a.n).slice(0, 12);
+  const mem = S.rounds.find(x => x.game === "memory");
+  const hist = store.get("ww_history", []).filter(h => h.name === (S.name || "Child"));
+  const child = r.child;
 
-function mirrorRound({ target, distractors }, n, total) {
-  const ui = C().ui, TILES = 20, TARGETS = 6, SECONDS = 15;
-  const items = shuffle([...Array(TARGETS).fill(target),
-    ...Array.from({ length: TILES - TARGETS }, () => distractors[Math.floor(Math.random() * distractors.length)])]);
-  return new Promise(res => {
-    el(`<div class="card">
-          <div class="hud">
-            <div>${ui.find} <span class="target">${target}</span></div>
-            <div class="timer" aria-label="${ui.timeLeft}"><div id="tbar"></div></div>
-          </div>
-          <div class="grid">${items.map((t, k) => `<button class="tile" data-k="${k}">${t}</button>`).join("")}</div>
-          <p class="progress">${n} / ${total}</p></div>`);
-    let hits = 0, misses = 0, ended = false; const t0 = performance.now();
-    const finish = () => {
-      if (ended) return; ended = true; clearInterval(tick);
-      const clicks = hits + misses;
-      res({ game: "mirror", skill: "visual", clicks, hits, misses,
-            mean_rt_ms: clicks ? (performance.now() - t0) / clicks : SECONDS * 1000 });
-    };
-    app.querySelectorAll(".tile").forEach(b => b.onclick = () => {
-      if (ended || b.classList.contains("hit")) return;
-      if (items[b.dataset.k] === target) { b.classList.add("hit"); hits++; if (hits === TARGETS) setTimeout(finish, 300); }
-      else { misses++; b.classList.remove("miss"); void b.offsetWidth; b.classList.add("miss"); }
-    });
-    const tick = setInterval(() => {
-      const left = 1 - (performance.now() - t0) / (SECONDS * 1000);
-      document.getElementById("tbar").style.width = Math.max(left, 0) * 100 + "%";
-      if (left <= 0) finish();
-    }, 100);
-  });
-}
-
-/* ---------- Game 2: Real or Alien? (decoding / pseudo-words) ---------- */
-async function realwordGame() {
-  const ui = C().ui, { real, alien } = C().realword;
-  await intro(ui.realTitle, ui.realInstr);
-  const R = shuffle(real), A = shuffle(alien), ROUNDS = 2, PER = 4;   // 2 rounds x 8 words
-  for (let r = 0; r < ROUNDS; r++) {
-    const words = shuffle([...R.slice(r * PER, r * PER + PER).map(w => [w, true]),
-                           ...A.slice(r * PER, r * PER + PER).map(w => [w, false])]);
-    state.rounds.push(await realwordRound(words, r + 1, ROUNDS));
-  }
-}
-
-async function realwordRound(words, n, total) {
-  const ui = C().ui; let hits = 0, misses = 0; const rts = [];
-  for (const [i, [word, isReal]] of words.entries()) {
-    el(`<div class="card">
-          <p class="progress">${ui.realTitle} · ${n} / ${total} · ${i + 1}/${words.length}</p>
-          <div class="word">${word}</div>
-          <div class="choices">
-            <button class="real" id="r">✔ ${ui.real}</button>
-            <button class="alien" id="a">👽 ${ui.alien}</button>
-          </div>
-          <p class="progress" style="text-align:center">← ${ui.real} &nbsp;|&nbsp; ${ui.alien} →</p></div>`);
-    const t0 = performance.now();
-    const answer = await new Promise(res => {
-      document.getElementById("r").onclick = () => res(true);
-      document.getElementById("a").onclick = () => res(false);
-      document.onkeydown = e => { if (e.key === "ArrowLeft") res(true); if (e.key === "ArrowRight") res(false); };
-    });
-    document.onkeydown = null;
-    rts.push(performance.now() - t0);
-    answer === isReal ? hits++ : misses++;
-    await sleep(150);
-  }
-  return { game: "realword", skill: "decoding", clicks: words.length, hits, misses,
-           mean_rt_ms: rts.reduce((a, b) => a + b, 0) / rts.length };
-}
-
-/* ---------- Results: parent / teacher view ---------- */
-const SKILL_NAMES = { visual: "Spotting look-alike letters", decoding: "Reading new words",
-                      phonology: "Hearing sounds in words", naming: "Naming speed" };
-
-async function results() {
-  el(`<div class="card"><h2>${C().ui.done} 🎉</h2><p class="muted">Calculating results…</p></div>`);
-  let r;
-  try {
-    const resp = await fetch("/api/predict", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ age: state.age, language: state.lang, rounds: state.rounds }) });
-    r = await resp.json();
-  } catch (e) { el(`<div class="card"><p>Could not reach the server: ${e}</p></div>`); return; }
-
-  const skills = Object.entries(r.skills).map(([k, v]) => `
-    <div class="skill">
-      <div class="row" style="justify-content:space-between">
-        <strong>${SKILL_NAMES[k] || k}</strong>
-        <span class="muted">${Math.round(v.accuracy * 100)}% correct${v.mean_rt_ms ? ` · ${(v.mean_rt_ms / 1000).toFixed(1)} s per answer` : ""}</span>
-      </div>
-      <div class="bar"><div style="width:${v.accuracy * 100}%"></div></div>
+  const condHtml = conds.map(([k, c]) => `
+    <div class="cond b-${c.band}">
+      <div class="center">${gauge(c.index, c.band)}<div><span class="tag t-${c.band}">${c.label}</span></div></div>
+      <div><h2>${c.title}</h2><p style="margin:4px 0">${c.meaning}</p>
+        <div class="when"><b>When to see a professional:</b> ${c.action}</div>
+        <p class="small muted" style="margin:8px 0 0">Index made of: ${Object.entries(c.parts).map(([p, v]) => `${p.replace("_", " ")} ${v}`).join(" · ")}</p></div>
     </div>`).join("");
 
-  // Insight: in regular scripts (Hindi, Telugu) dyslexia often shows as slow-but-accurate reading.
-  const dec = r.skills.decoding;
-  const slowNote = dec && dec.accuracy >= 0.8 && dec.mean_rt_ms > 2500
-    ? `<div class="note">⏱ Accurate but slow on new words. In regular scripts like Hindi and Telugu, slow reading
-       can be a sign of dyslexia even when answers are right.</div>` : "";
+  const skillsHtml = Object.entries(r.skills).map(([k, v]) => `
+    <div class="skill"><div class="row" style="justify-content:space-between">
+      <b>${GAME_NAMES[SKILL_GAME[k]?.id]?.icon || ""} ${v.label}</b>
+      <span class="small" style="color:${concernCol(v.concern)};font-weight:700">${concernTxt(v.concern)}</span></div>
+      <div class="bar"><div style="width:${Math.max(v.concern, 3)}%;background:${concernCol(v.concern)}"></div></div>
+      <div class="small muted">${Math.round(v.accuracy * 100)}% correct (expected ≈${Math.round(v.expected_accuracy * 100)}%)${v.mean_rt_ms ? ` · ${(v.mean_rt_ms / 1000).toFixed(1)} s per answer (expected ≈${(v.expected_rt_ms / 1000).toFixed(1)} s)` : ""}</div></div>`).join("");
 
-  el(`<div class="card">
-        <p class="muted">Parent / teacher view · ${CONTENT[state.lang].name} · age ${state.age}</p>
-        <div class="band ${r.level}"><h2>${r.label}</h2></div>
-        <h3>Skills</h3>${skills}${slowNote}
-        <h3>What influenced this result</h3>
-        <ul>${r.reasons.map(x => `<li>The child's <strong>${x.text}</strong> ${x.direction} the signal.</li>`).join("")}</ul>
-        <p class="disclaimer">${r.disclaimer} Model trained on data from Rello et al. (2020), PLOS ONE.</p>
-        <button class="btn" id="again">Play again</button>
-      </div>`);
-  document.getElementById("again").onclick = home;
+  const att = r.conditions.attention?.details;
+  const trend = hist.length > 1 ? `<h3>📈 Progress over time</h3>${trendChart(hist)}` : "";
+
+  render(`<div class="card report">
+    <div class="row" style="justify-content:space-between">
+      <div><p class="muted small" style="margin:0">Screening report · ${new Date().toLocaleDateString()}</p>
+        <h1 style="margin:2px 0">${child.name}, age ${child.age}${child.grade ? ` · Class ${child.grade}` : ""}</h1>
+        <p class="muted" style="margin:0">Played in ${CONTENT[child.language].name}</p></div>
+      <div class="row noprint"><button class="ghost" id="print">🖨️ Print / PDF</button><button class="ghost" id="dl">⬇ Data</button><button class="btn" id="new">New screening</button></div>
+    </div>
+    ${r.see_professional ? `<div class="warn" style="margin-top:16px">🩺 <b>Recommendation:</b> please book an assessment with a professional. Take this report with you. See "Who to see" below.</div>` : ""}
+    ${r.data_quality.map(d => `<div class="warn">⚠️ ${d} Consider playing again on another day.</div>`).join("")}
+    <div class="tabs noprint" role="tablist">${[["sum", "Summary"], ["skills", "Skills & mistakes"], ["plan", "Action plan"], ["next", "If diagnosed"]].map(([id, t], i) => `<button role="tab" data-t="${id}" aria-selected="${i === 0}">${t}</button>`).join("")}</div>
+
+    <section class="tabpane" data-p="sum">${condHtml}
+      ${r.notes.map(n => `<div class="note">💡 ${n}</div>`).join("")}
+      ${r.questionnaire_flags.length ? `<p class="small"><b>From the questionnaire:</b> ${r.questionnaire_flags.join("; ")}.</p>` : ""}
+      ${trend}
+    </section>
+
+    <section class="tabpane" data-p="skills" hidden>
+      <h3 style="margin-top:0">Skill profile <span class="small muted">(compared with what is expected at age ${child.age})</span></h3>${skillsHtml}
+      ${mem ? `<p class="small">🧠 Longest sequence remembered: <b>${mem.span || "under 2"}</b> steps.</p>` : ""}
+      ${att ? `<p class="small">🎯 Attention game: missed <b>${Math.round(att.omission_rate * 100)}%</b> of stars, tapped <b>${Math.round(att.commission_rate * 100)}%</b> of clouds, reaction-time variability <b>${att.rt_variability}</b>.</p>` : ""}
+      <h3>Mistake patterns</h3>
+      ${top.length ? `<table><thead><tr><th>Game</th><th>Expected</th><th>Chose</th><th>Times</th><th>Where</th></tr></thead><tbody>
+        ${top.map(g => `<tr><td>${GAME_NAMES[g.game]?.icon} ${GAME_NAMES[g.game]?.title(UI()) || g.game}</td><td><b>${g.expected}</b></td><td><b>${g.chosen}</b></td><td>${g.n}</td><td class="muted">${[...g.items].slice(0, 3).join(", ")}</td></tr>`).join("")}</tbody></table>` : `<p class="muted">No mistakes recorded. 🎉</p>`}
+      ${r.reasons.length ? `<h3>What the AI model looked at</h3><ul class="small">${r.reasons.map(x => `<li>The child's <b>${x.text}</b> ${x.direction} the model's estimate.</li>`).join("")}</ul>
+        <p class="small muted">Model: XGBoost trained on 3,644 children (Rello et al., 2020, PLOS ONE). It is one part of the reading index.</p>` : ""}
+    </section>
+
+    <section class="tabpane" data-p="plan" hidden>
+      ${r.action_plan.length ? `<p>Focus on these skills at home for the next 6–8 weeks. Little and often (10–15 minutes a day) works best.</p>
+      <div class="plan">${r.action_plan.map(p => `<div class="p"><b>${SKILL_GAME[p.skill]?.icon || "📌"} ${p.label}</b><ul>${p.activities.map(a => `<li>${a}</li>`).join("")}</ul>
+        ${SKILL_GAME[p.skill] ? `<button class="ghost noprint" data-practice="${SKILL_GAME[p.skill].id}">🎮 Practise with ${SKILL_GAME[p.skill].title(UI())}</button>` : ""}</div>`).join("")}</div>`
+        : `<p>All skills look as expected. Keep reading together every day! 📚</p>`}
+      <h3>👩‍⚕️ Who to see</h3><ul class="small">${r.who_to_see.map(w => `<li>${w}</li>`).join("")}</ul>
+    </section>
+
+    <section class="tabpane" data-p="next" hidden>
+      <p>If a professional confirms a learning difficulty, here is what usually helps next:</p>
+      <div class="steps">${r.next_steps_if_diagnosed.map(s => `<div><b>${s.title}.</b> ${s.text}</div>`).join("")}</div>
+    </section>
+    <p class="disclaimer">⚠️ ${r.disclaimer}</p>
+  </div>`);
+  app.querySelectorAll("[role=tab]").forEach(t => t.onclick = () => {
+    app.querySelectorAll("[role=tab]").forEach(x => x.setAttribute("aria-selected", x === t));
+    app.querySelectorAll(".tabpane").forEach(p => p.hidden = p.dataset.p !== t.dataset.t);
+  });
+  app.querySelectorAll("[data-practice]").forEach(b => b.onclick = () => { S.practice = true; playGame(GAMES.find(g => g.id === b.dataset.practice)); });
+  $("print").onclick = () => window.print();
+  $("new").onclick = setup;
+  $("dl").onclick = () => {
+    const blob = new Blob([JSON.stringify({ report: r, rounds: S.rounds }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `screening-${child.name}-${Date.now()}.json`; a.click();
+  };
 }
 
-const GAMES = [mirrorGame, realwordGame];   // Step 4 adds rhymeGame and namingGame here
-home();
+function trendChart(hist) {
+  const W = 520, H = 160, keys = ["dyslexia", "dyscalculia", "attention"], cols = { dyslexia: "#7B61D9", dyscalculia: "#3D8BFD", attention: "#F07A3A" };
+  const x = i => 30 + i * (W - 50) / Math.max(hist.length - 1, 1), y = v => H - 20 - v / 100 * (H - 35);
+  const lines = keys.map(k => {
+    const pts = hist.map((h, i) => h.idx[k] != null ? [x(i), y(h.idx[k])] : null).filter(Boolean);
+    return pts.length ? `<polyline points="${pts.map(p => p.join(",")).join(" ")}" fill="none" stroke="${cols[k]}" stroke-width="3"/>${pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="${cols[k]}"/>`).join("")}` : "";
+  }).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Index over time">
+    ${[25, 50, 75].map(v => `<line x1="30" x2="${W - 20}" y1="${y(v)}" y2="${y(v)}" stroke="#E7E2F3"/><text x="4" y="${y(v) + 4}" font-size="10" fill="#5D6785">${v}</text>`).join("")}
+    ${lines}${hist.map((h, i) => `<text x="${x(i)}" y="${H - 4}" font-size="9" text-anchor="middle" fill="#5D6785">${new Date(h.date).toLocaleDateString(undefined, { day: "numeric", month: "short" })}</text>`).join("")}</svg>
+    <p class="small">${keys.filter(k => hist.some(h => h.idx[k] != null)).map(k => `<span style="color:${cols[k]};font-weight:700">● ${k}</span>`).join(" &nbsp; ")} <span class="muted">— lower is better</span></p>`;
+}
+
+function history() {
+  const hist = store.get("ww_history", []);
+  render(`<div class="card"><h2>📈 Past results on this device</h2>${trendChart(hist)}
+    <table><thead><tr><th>Date</th><th>Child</th><th>Reading</th><th>Numbers</th><th>Attention</th></tr></thead><tbody>
+    ${hist.slice().reverse().map(h => `<tr><td>${new Date(h.date).toLocaleString()}</td><td>${h.name} (${h.age})</td><td>${h.idx.dyslexia ?? "–"}</td><td>${h.idx.dyscalculia ?? "–"}</td><td>${h.idx.attention ?? "–"}</td></tr>`).join("")}
+    </tbody></table><p><button class="btn" id="back">← Back</button></p></div>`);
+  $("back").onclick = setup;
+}
+
+/* ------------------------- boot ------------------------- */
+(async () => {
+  CONTENT = await (await fetch("/static/content.json")).json(); delete CONTENT._note;
+  try { AUDIO = await (await fetch("/static/audio/manifest.json")).json(); } catch { AUDIO = {}; }
+  setup();
+})();
 </script>
 </body>
 </html>
