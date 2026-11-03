@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word Wizards - Dyslexia Screener</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+Telugu:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF8EC; --card: #FFFFFF; --ink: #1F2A44; --muted: #5B6478;
+    --teal: #0E8A7E; --teal-soft: #D7F1EC; --orange: #E8772E; --red: #D64545;
+    --green: #2E9E5B; --line: #EADFCB; --radius: 20px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Lexend", "Noto Sans Devanagari", "Noto Sans Telugu", Verdana, sans-serif;
+    font-size: 20px; line-height: 1.5; letter-spacing: .02em;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+  .card { background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 28px; }
+  h1 { font-size: 2.2rem; margin: 0 0 4px; } h2 { margin: 0 0 8px; }
+  .muted { color: var(--muted); }
+  button { font: inherit; cursor: pointer; border-radius: 16px; border: none; }
+  button:focus-visible { outline: 4px solid var(--orange); outline-offset: 3px; }
+  .btn { background: var(--teal); color: #fff; padding: 14px 32px; font-weight: 600; font-size: 1.1rem; }
+  .btn:hover { filter: brightness(1.08); }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .langs button { background: var(--teal-soft); color: var(--ink); padding: 12px 22px; border: 2px solid transparent; }
+  .langs button[aria-pressed="true"] { border-color: var(--teal); background: #fff; font-weight: 600; }
+  label { font-weight: 600; } input[type=number] { font: inherit; width: 100px; padding: 8px 12px; border-radius: 12px; border: 2px solid var(--line); }
+  .hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 12px; }
+  .target { font-size: 2.6rem; font-weight: 700; background: var(--teal-soft); padding: 2px 22px; border-radius: 14px; }
+  .timer { height: 12px; background: var(--line); border-radius: 8px; overflow: hidden; flex: 1; max-width: 260px; }
+  .timer > div { height: 100%; background: var(--orange); width: 100%; transition: width .1s linear; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .tile { aspect-ratio: 1; font-size: 2.2rem; font-weight: 600; background: #fff; border: 2px solid var(--line); color: var(--ink); }
+  .tile.hit { background: var(--green); color: #fff; border-color: var(--green); }
+  .tile.miss { animation: shake .3s; background: #FBE3E3; border-color: var(--red); }
+  @keyframes shake { 25% { transform: translateX(-5px);} 75% { transform: translateX(5px);} }
+  .word { font-size: 3.4rem; font-weight: 700; text-align: center; padding: 40px 0; }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .choices button { padding: 24px; font-size: 1.5rem; font-weight: 700; color: #fff; }
+  .real { background: var(--teal); } .alien { background: #7A5CC8; }
+  .progress { color: var(--muted); font-size: .9rem; }
+  .band { border-radius: var(--radius); padding: 22px 26px; margin-bottom: 20px; }
+  .band.low { background: #E1F4E8; } .band.medium { background: #FFF0D6; } .band.high { background: #FDE3DA; }
+  .bar { height: 18px; background: var(--line); border-radius: 10px; overflow: hidden; }
+  .bar > div { height: 100%; background: var(--teal); }
+  .skill { margin: 14px 0; }
+  .note { background: var(--teal-soft); border-radius: 14px; padding: 14px 18px; margin: 16px 0; }
+  .disclaimer { font-size: .85rem; color: var(--muted); margin-top: 20px; }
+  .hidden { display: none; }
+  @media (max-width: 560px) { .grid { grid-template-columns: repeat(4, 1fr); } .word { font-size: 2.6rem; } }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+
+<script src="/static/content.js"></script>
+<script>
+const app = document.getElementById("app");
+const state = { lang: "en", age: 9, rounds: [] };
+const C = () => CONTENT[state.lang];
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const el = (html) => { app.innerHTML = html; return app; };
+
+/* ---------- Home ---------- */
+function home() {
+  const ui = C().ui;
+  document.documentElement.lang = state.lang;
+  el(`
+    <div class="card">
+      <h1>${ui.title}</h1>
+      <p class="muted">${ui.subtitle}</p>
+      <div class="row langs" role="group" aria-label="Language">
+        ${Object.entries(CONTENT).map(([k, v]) =>
+          `<button data-lang="${k}" aria-pressed="${k === state.lang}">${v.name}</button>`).join("")}
+      </div>
+      <p class="row" style="margin-top:24px">
+        <label for="age">${ui.age}</label>
+        <input id="age" type="number" min="5" max="17" value="${state.age}">
+      </p>
+      <button class="btn" id="start">${ui.start} ▶</button>
+    </div>`);
+  app.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { state.lang = b.dataset.lang; home(); });
+  document.getElementById("start").onclick = async () => {
+    state.age = parseInt(document.getElementById("age").value) || 9;
+    state.rounds = [];
+    for (const game of GAMES) await game();
+    results();
+  };
+}
+
+/* ---------- Intro card shown before each game ---------- */
+function intro(title, instr) {
+  return new Promise(res => {
+    el(`<div class="card" style="text-align:center">
+          <h2>${title}</h2><p>${instr}</p>
+          <button class="btn" id="go">${C().ui.start} ▶</button></div>`);
+    const b = document.getElementById("go"); b.focus(); b.onclick = res;
+  });
+}
+
+/* ---------- Game 1: Mirror Hunt (visual discrimination) ---------- */
+async function mirrorGame() {
+  const ui = C().ui;
+  await intro(ui.mirrorTitle, ui.mirrorInstr);
+  for (const [i, r] of C().mirror.entries()) {
+    state.rounds.push(await mirrorRound(r, i + 1, C().mirror.length));
+  }
+}
+
+function mirrorRound({ target, distractors }, n, total) {
+  const ui = C().ui, TILES = 20, TARGETS = 6, SECONDS = 15;
+  const items = shuffle([...Array(TARGETS).fill(target),
+    ...Array.from({ length: TILES - TARGETS }, () => distractors[Math.floor(Math.random() * distractors.length)])]);
+  return new Promise(res => {
+    el(`<div class="card">
+          <div class="hud">
+            <div>${ui.find} <span class="target">${target}</span></div>
+            <div class="timer" aria-label="${ui.timeLeft}"><div id="tbar"></div></div>
+          </div>
+          <div class="grid">${items.map((t, k) => `<button class="tile" data-k="${k}">${t}</button>`).join("")}</div>
+          <p class="progress">${n} / ${total}</p></div>`);
+    let hits = 0, misses = 0, ended = false; const t0 = performance.now();
+    const finish = () => {
+      if (ended) return; ended = true; clearInterval(tick);
+      const clicks = hits + misses;
+      res({ game: "mirror", skill: "visual", clicks, hits, misses,
+            mean_rt_ms: clicks ? (performance.now() - t0) / clicks : SECONDS * 1000 });
+    };
+    app.querySelectorAll(".tile").forEach(b => b.onclick = () => {
+      if (ended || b.classList.contains("hit")) return;
+      if (items[b.dataset.k] === target) { b.classList.add("hit"); hits++; if (hits === TARGETS) setTimeout(finish, 300); }
+      else { misses++; b.classList.remove("miss"); void b.offsetWidth; b.classList.add("miss"); }
+    });
+    const tick = setInterval(() => {
+      const left = 1 - (performance.now() - t0) / (SECONDS * 1000);
+      document.getElementById("tbar").style.width = Math.max(left, 0) * 100 + "%";
+      if (left <= 0) finish();
+    }, 100);
+  });
+}
+
+/* ---------- Game 2: Real or Alien? (decoding / pseudo-words) ---------- */
+async function realwordGame() {
+  const ui = C().ui, { real, alien } = C().realword;
+  await intro(ui.realTitle, ui.realInstr);
+  const R = shuffle(real), A = shuffle(alien), ROUNDS = 2, PER = 4;   // 2 rounds x 8 words
+  for (let r = 0; r < ROUNDS; r++) {
+    const words = shuffle([...R.slice(r * PER, r * PER + PER).map(w => [w, true]),
+                           ...A.slice(r * PER, r * PER + PER).map(w => [w, false])]);
+    state.rounds.push(await realwordRound(words, r + 1, ROUNDS));
+  }
+}
+
+async function realwordRound(words, n, total) {
+  const ui = C().ui; let hits = 0, misses = 0; const rts = [];
+  for (const [i, [word, isReal]] of words.entries()) {
+    el(`<div class="card">
+          <p class="progress">${ui.realTitle} · ${n} / ${total} · ${i + 1}/${words.length}</p>
+          <div class="word">${word}</div>
+          <div class="choices">
+            <button class="real" id="r">✔ ${ui.real}</button>
+            <button class="alien" id="a">👽 ${ui.alien}</button>
+          </div>
+          <p class="progress" style="text-align:center">← ${ui.real} &nbsp;|&nbsp; ${ui.alien} →</p></div>`);
+    const t0 = performance.now();
+    const answer = await new Promise(res => {
+      document.getElementById("r").onclick = () => res(true);
+      document.getElementById("a").onclick = () => res(false);
+      document.onkeydown = e => { if (e.key === "ArrowLeft") res(true); if (e.key === "ArrowRight") res(false); };
+    });
+    document.onkeydown = null;
+    rts.push(performance.now() - t0);
+    answer === isReal ? hits++ : misses++;
+    await sleep(150);
+  }
+  return { game: "realword", skill: "decoding", clicks: words.length, hits, misses,
+           mean_rt_ms: rts.reduce((a, b) => a + b, 0) / rts.length };
+}
+
+/* ---------- Results: parent / teacher view ---------- */
+const SKILL_NAMES = { visual: "Spotting look-alike letters", decoding: "Reading new words",
+                      phonology: "Hearing sounds in words", naming: "Naming speed" };
+
+async function results() {
+  el(`<div class="card"><h2>${C().ui.done} 🎉</h2><p class="muted">Calculating results…</p></div>`);
+  let r;
+  try {
+    const resp = await fetch("/api/predict", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ age: state.age, language: state.lang, rounds: state.rounds }) });
+    r = await resp.json();
+  } catch (e) { el(`<div class="card"><p>Could not reach the server: ${e}</p></div>`); return; }
+
+  const skills = Object.entries(r.skills).map(([k, v]) => `
+    <div class="skill">
+      <div class="row" style="justify-content:space-between">
+        <strong>${SKILL_NAMES[k] || k}</strong>
+        <span class="muted">${Math.round(v.accuracy * 100)}% correct${v.mean_rt_ms ? ` · ${(v.mean_rt_ms / 1000).toFixed(1)} s per answer` : ""}</span>
+      </div>
+      <div class="bar"><div style="width:${v.accuracy * 100}%"></div></div>
+    </div>`).join("");
+
+  // Insight: in regular scripts (Hindi, Telugu) dyslexia often shows as slow-but-accurate reading.
+  const dec = r.skills.decoding;
+  const slowNote = dec && dec.accuracy >= 0.8 && dec.mean_rt_ms > 2500
+    ? `<div class="note">⏱ Accurate but slow on new words. In regular scripts like Hindi and Telugu, slow reading
+       can be a sign of dyslexia even when answers are right.</div>` : "";
+
+  el(`<div class="card">
+        <p class="muted">Parent / teacher view · ${CONTENT[state.lang].name} · age ${state.age}</p>
+        <div class="band ${r.level}"><h2>${r.label}</h2></div>
+        <h3>Skills</h3>${skills}${slowNote}
+        <h3>What influenced this result</h3>
+        <ul>${r.reasons.map(x => `<li>The child's <strong>${x.text}</strong> ${x.direction} the signal.</li>`).join("")}</ul>
+        <p class="disclaimer">${r.disclaimer} Model trained on data from Rello et al. (2020), PLOS ONE.</p>
+        <button class="btn" id="again">Play again</button>
+      </div>`);
+  document.getElementById("again").onclick = home;
+}
+
+const GAMES = [mirrorGame, realwordGame];   // Step 4 adds rhymeGame and namingGame here
+home();
+</script>
+</body>
+</html>
