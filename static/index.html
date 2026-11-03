@@ -15,6 +15,11 @@
   --font:"Lexend","Noto Sans Devanagari","Noto Sans Telugu",Verdana,sans-serif;
 }
 *{box-sizing:border-box}
+body{caret-color:transparent;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;cursor:default}
+input[type=text],input[type=number]{caret-color:auto;-webkit-user-select:text;user-select:text;cursor:text}
+.report,.report *{-webkit-user-select:text;user-select:text}
+button,label,.chip{cursor:pointer}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
 [hidden]{display:none!important}
 html{min-height:100%;background:linear-gradient(180deg,#A9DCFF 0%,#D9F0FF 38%,#FFF4DC 100%) fixed}
 html,body{margin:0;min-height:100%}
@@ -25,12 +30,36 @@ body{font-family:var(--font);color:var(--ink);font-size:19px;line-height:1.5;let
 .cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
 .cloud::before{width:55%;height:150%;left:15%;top:-60%}.cloud::after{width:40%;height:120%;right:12%;top:-40%}
 @keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
-.wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:14px 16px 60px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem}
-.brand .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--blue));display:grid;place-items:center;font-size:1.4rem;box-shadow:var(--shadow)}
+.wrap{position:relative;z-index:1;max-width:940px;margin:0 auto;padding:clamp(10px,2vh,18px) 14px 24px}
+.topbar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 22px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.8);box-shadow:0 2px 14px rgba(40,50,110,.08)}
+.brand{display:flex;align-items:center;gap:11px;background:none;padding:0;text-align:left}
+.brand svg{width:44px;height:44px;flex:none;filter:drop-shadow(0 4px 8px rgba(91,80,200,.35))}
+.brand .wm{font-weight:800;font-size:1.3rem;line-height:1;letter-spacing:-.01em}
+.brand .wm b{background:linear-gradient(90deg,#6E4FE0,#2E86F5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand .wm small{display:block;font-size:.66rem;font-weight:600;color:var(--muted);letter-spacing:.04em;margin-top:3px;text-transform:uppercase}
+/* landing */
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:24px;align-items:center}
+.hero h1{font-size:2.6rem;letter-spacing:-.02em}
+.hero .lead{font-size:1.15rem;color:var(--muted)}
+.hero-art{position:relative;height:250px;display:grid;place-items:center}
+.hero-art .big{font-size:8rem;animation:bob 2.4s ease-in-out infinite;filter:drop-shadow(0 12px 12px rgba(0,0,0,.18))}
+.hero-art .orb{position:absolute;font-size:2.2rem;animation:bob 3s ease-in-out infinite}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px}
+.feat div{background:#F8F7FD;border-radius:18px;padding:16px;font-size:.92rem}
+.feat b{display:block;font-size:1rem;margin:4px 0}
+.feat .e{font-size:1.8rem}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.how div{background:linear-gradient(180deg,#fff,#F6F4FF);border:2px solid var(--line);border-radius:18px;padding:16px;position:relative;font-size:.92rem}
+.how div span{position:absolute;top:-14px;left:16px;width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;display:grid;place-items:center;font-weight:800}
+.skillchips{display:flex;flex-wrap:wrap;gap:8px}
+.skillchips span{background:#fff;border:2px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:600}
+.acc{background:#FFF8E6;border:2px solid #F6DE9C;border-radius:18px;padding:16px 18px;font-size:.92rem}
+.pdf-only{display:none}
+.pdfmode .pdf-only{display:block}.pdfmode .noprint{display:none!important}.pdfmode .tabpane{display:block!important}
+.pdfmode{box-shadow:none!important;animation:none!important}
 .pill{background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;box-shadow:var(--shadow);display:inline-flex;gap:6px;align-items:center}
-.card{background:var(--card);border-radius:var(--r);padding:28px;box-shadow:var(--shadow);animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
+.card{background:var(--card);border-radius:var(--r);padding:clamp(16px,3vh,28px);box-shadow:var(--shadow);animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{from{transform:scale(.96) translateY(8px);opacity:0}}
 h1{font-size:2.1rem;margin:0 0 6px;line-height:1.2}h2{margin:0 0 8px;line-height:1.25}h3{margin:22px 0 10px}
 .muted{color:var(--muted)}.small{font-size:.85rem}.center{text-align:center}
@@ -54,18 +83,30 @@ input[type=number],input[type=text]{font:inherit;padding:10px 14px;border-radius
 .chip .em{font-size:1.6rem}
 .q{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
 /* ---------- owl ---------- */
-.owl-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px}
-.owl{font-size:4rem;line-height:1;animation:bob 2.2s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));cursor:pointer;background:none;padding:0}
+.owl-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:clamp(8px,1.6vh,16px)}
+.owl{font-size:clamp(2.8rem,7vh,4rem);line-height:1;animation:bob 2.2s ease-in-out infinite;filter:drop-shadow(0 6px 6px rgba(0,0,0,.15));cursor:pointer;background:none;padding:0}
 @keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
 .bubble{position:relative;background:#fff;border-radius:20px;padding:14px 18px;box-shadow:var(--shadow);font-weight:600;flex:1}
 .bubble::before{content:"";position:absolute;left:-10px;bottom:18px;border:10px solid transparent;border-right-color:#fff;border-left:0}
 /* ---------- map ---------- */
-.map{position:relative;background:linear-gradient(180deg,#5EC4F2,#3FA9E0);border-radius:28px;padding:26px 18px;box-shadow:var(--shadow);overflow:hidden;min-height:420px}
-.map::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(255,255,255,.25) 0 2px,transparent 3px) 0 0/38px 38px;opacity:.6;pointer-events:none}
-.path{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.islands{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:26px 10px;z-index:1}
+.map{position:relative;border-radius:28px;padding:clamp(16px,3vh,28px) 12px;box-shadow:var(--shadow);overflow:hidden;
+  background:radial-gradient(ellipse at 18% 15%,rgba(255,255,255,.35),transparent 45%),radial-gradient(ellipse at 85% 90%,rgba(255,255,255,.22),transparent 40%),linear-gradient(160deg,#63CCF5 0%,#3BA7E2 55%,#2C8FD0 100%)}
+.path{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.path .road{fill:none;stroke:rgba(255,255,255,.75);stroke-width:5;stroke-linecap:round;stroke-dasharray:2 12}
+.path .trail{fill:none;stroke:#FFD45C;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+.islands{position:relative;display:grid;grid-template-columns:repeat(var(--cols,4),1fr);gap:clamp(14px,3.2vh,30px) 8px;z-index:2}
+.waves{position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;z-index:1;overflow:hidden}
+.waves svg{position:absolute;left:0;width:200%;height:46px;animation:wave linear infinite}
+.waves svg path{fill:none;stroke:rgba(255,255,255,.28);stroke-width:2.2;stroke-linecap:round}
+@keyframes wave{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.sparkle{position:absolute;color:#fff;opacity:0;font-size:12px;animation:twinkle 3.2s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes twinkle{50%{opacity:.85;transform:scale(1.25)}}
+.foam{position:absolute;left:-10%;right:-10%;bottom:-30px;height:70px;background:radial-gradient(ellipse at 50% 0,rgba(255,255,255,.35),transparent 70%);animation:tide 6s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes tide{50%{transform:translateY(-10px)}}
 .island{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;padding:0}
-.island .blob{width:96px;height:96px;border-radius:48% 52% 45% 55%/55% 45% 55% 45%;display:grid;place-items:center;font-size:2.6rem;
+.island .blob>span:first-child{display:inline-block;animation:float 4s ease-in-out infinite}.island:nth-child(3n+2) .blob>span:first-child{animation-delay:-1.3s}.island:nth-child(3n) .blob>span:first-child{animation-delay:-2.6s}
+@keyframes float{50%{transform:translateY(-4px)}}
+.island .blob{width:var(--isl,88px);height:var(--isl,88px);border-radius:48% 52% 45% 55%/55% 45% 55% 45%;display:grid;place-items:center;font-size:2.6rem;
   background:radial-gradient(circle at 35% 30%,#FFF3C4,#F6D27A 60%,#D9A845);box-shadow:0 8px 0 #2D8FC2,0 12px 18px rgba(0,0,0,.18);position:relative}
 .island .blob::after{content:"";position:absolute;inset:6px;border-radius:inherit;background:radial-gradient(circle at 50% 35%,#8FDB7A,#52B85B);z-index:-0;opacity:.95}
 .island .blob span{position:relative;z-index:1}
@@ -79,21 +120,21 @@ input[type=number],input[type=text]{font:inherit;padding:10px 14px;border-radius
 .target{font-size:2.6rem;font-weight:800;background:var(--teal-s);padding:0 22px;border-radius:14px;display:inline-block}
 .timer{height:14px;background:#EEE9F8;border-radius:10px;overflow:hidden;flex:1;max-width:260px}
 .timer>div{height:100%;background:linear-gradient(90deg,var(--sun),var(--orange));width:100%;transition:width .1s linear}
-.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-.tile{aspect-ratio:1;font-size:2.3rem;font-weight:700;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(6px,1.2vh,10px);max-width:calc((100dvh - 290px) * 1.27);margin:0 auto}
+.tile{aspect-ratio:1;font-size:clamp(1.5rem,4.2vh,2.3rem);font-weight:700;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
 .ok{background:#DDF5E7!important;border-color:var(--green)!important;box-shadow:0 4px 0 var(--green)!important}
 .tile.ok{background:var(--green)!important;color:#fff}
 .bad{background:#FDE4E7!important;border-color:var(--red)!important;box-shadow:0 4px 0 var(--red)!important;animation:shake .35s}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.word{font-size:3.6rem;font-weight:800;text-align:center;padding:30px 0}
+.word{font-size:clamp(2.4rem,7vh,3.6rem);font-weight:800;text-align:center;padding:clamp(12px,4vh,30px) 0}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .two button{padding:22px;font-size:1.4rem;font-weight:800;color:#fff;border:4px solid transparent}
 .c-teal{background:var(--teal);box-shadow:0 6px 0 var(--teal-d)}.c-purple{background:var(--purple);box-shadow:0 6px 0 #5A43B0}
 .c-green{background:var(--green);box-shadow:0 6px 0 #1F7E4A}.c-orange{background:var(--orange);box-shadow:0 6px 0 #BE5520}
 .c-blue{background:var(--blue);box-shadow:0 6px 0 #2366CC}
-.speaker{font-size:4rem;text-align:center;padding:8px 0;animation:bob 1.6s ease-in-out infinite}
+.speaker{font-size:clamp(2.6rem,7vh,4rem);text-align:center;padding:4px 0;height:clamp(64px,11vh,90px);animation:bob 1.6s ease-in-out infinite}
 .pics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.pic{font-size:3.4rem;padding:16px 0;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.pic{font-size:clamp(2.4rem,6vh,3.4rem);padding:clamp(8px,1.8vh,16px) 0;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
 .letters{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .letter{font-size:3rem;font-weight:800;padding:18px 0;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
 .slots{display:flex;justify-content:center;gap:10px;margin:14px 0 24px}
@@ -103,14 +144,14 @@ input[type=number],input[type=text]{font:inherit;padding:10px 14px;border-radius
 .unit{min-width:84px;padding:12px 18px;font-size:2.2rem;font-weight:700;background:var(--teal-s);border:3px solid var(--teal);box-shadow:0 4px 0 var(--teal)}
 .unit[disabled]{opacity:.3}
 .pads{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:420px;margin:0 auto}
-.pad{font-size:3.6rem;padding:20px 0;border:4px solid transparent;filter:saturate(.55) brightness(.97);box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.pad{font-size:clamp(2.6rem,7vh,3.6rem);padding:clamp(10px,2.4vh,20px) 0;border:4px solid transparent;filter:saturate(.55) brightness(.97);box-shadow:0 6px 0 rgba(0,0,0,.12)}
 .pad.lit{filter:none;transform:scale(1.08);border-color:var(--ink);box-shadow:0 0 26px rgba(0,0,0,.25)}
-.dotbox{position:relative;height:240px;background:#0F1B3D;border-radius:20px;margin:6px 0 18px;overflow:hidden}
+.dotbox{position:relative;height:clamp(170px,32vh,240px);background:#0F1B3D;border-radius:20px;margin:6px 0 18px;overflow:hidden}
 .dot{position:absolute;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFE9A8,var(--sun));box-shadow:0 0 14px rgba(255,190,60,.8)}
 .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .num{font-size:2.4rem;font-weight:800;padding:14px 0;background:#fff;border:3px solid var(--line);box-shadow:0 4px 0 var(--line)}
 .bignum{font-size:4.2rem;font-weight:800;padding:34px 0;color:#fff}
-.stage{height:300px;border-radius:24px;background:linear-gradient(180deg,#1C2C66,#3A2F7A);display:grid;place-items:center;font-size:7rem;user-select:none;cursor:pointer;width:100%;box-shadow:inset 0 -10px 30px rgba(0,0,0,.3)}
+.stage{height:clamp(220px,48vh,320px);border-radius:24px;background:linear-gradient(180deg,#1C2C66,#3A2F7A);display:grid;place-items:center;font-size:7rem;user-select:none;cursor:pointer;width:100%;box-shadow:inset 0 -10px 30px rgba(0,0,0,.3)}
 .stage .stim{animation:pop .15s}
 .progress{color:var(--muted);font-size:.85rem}
 .float{position:fixed;font-weight:800;font-size:1.4rem;color:var(--sun);pointer-events:none;animation:rise 0.9s ease-out forwards;z-index:9;text-shadow:0 2px 0 #fff}
@@ -143,24 +184,40 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{co
 .tabs button{padding:8px 16px;border-radius:999px;background:#F2F0FA;font-weight:700;font-size:.9rem;color:var(--muted)}
 .tabs button[aria-selected=true]{background:var(--ink);color:#fff}
 .disclaimer{font-size:.8rem;color:var(--muted);margin-top:18px}
-@media(max-width:640px){.grid2{grid-template-columns:1fr}.islands{grid-template-columns:repeat(3,1fr)}.tiles{grid-template-columns:repeat(4,1fr)}
-  .cond{grid-template-columns:1fr}.word{font-size:2.6rem}.letters,.nums{grid-template-columns:repeat(2,1fr)}.island .blob{width:80px;height:80px}}
-@media print{.sky,.topbar,.noprint{display:none!important}body{background:#fff}.card{box-shadow:none;padding:0}.tabpane{display:block!important}.cond{break-inside:avoid}}
+@media(max-width:640px){.maponly{display:none}#play,#fin{margin-top:-4px}.island .blob .badge{font-size:1rem}
+  .topbar{padding:8px 12px}.brand svg{width:38px;height:38px}.brand .wm{font-size:1.1rem}
+  .tiles{grid-template-columns:repeat(4,1fr);max-width:calc((100dvh - 290px) * .8)}.bubble{font-size:.9rem;padding:10px 14px}
+  .two button{padding:16px 8px;font-size:1.15rem}.bignum{font-size:3rem!important;padding:22px 0!important}
+  .grid2,.hero,.how{grid-template-columns:1fr}.hero-art{height:150px}.hero-art .big{font-size:5rem}.brand .wm small{display:none}.tiles{grid-template-columns:repeat(4,1fr)}
+  .cond{grid-template-columns:1fr}.word{font-size:2.6rem}.letters,.nums{grid-template-columns:repeat(2,1fr)}.island .name{font-size:.68rem}}
+@media print{.pdf-only{display:block}.sky,.topbar,.noprint{display:none!important}body{background:#fff}.card{box-shadow:none;padding:0}.tabpane{display:block!important}.cond{break-inside:avoid}}
 </style>
 </head>
 <body>
 <div class="sky" aria-hidden="true" id="sky"></div>
-<div class="wrap">
-  <div class="topbar">
-    <div class="brand"><div class="logo">🦉</div><span>Word Wizards</span></div>
-    <div class="row">
-      <span class="pill" id="coins" title="Coins" hidden>🪙 <b id="coinN">0</b></span>
-      <button class="ghost" id="mute" aria-pressed="false">🔊</button>
-    </div>
+<header class="topbar">
+  <button class="brand" id="brand" aria-label="Word Wizards home">
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7B5CF0"/><stop offset="1" stop-color="#2E86F5"/></linearGradient></defs>
+      <rect width="48" height="48" rx="14" fill="url(#lg)"/>
+      <path d="M9 21.5c5.2-2.2 10-1.6 15 1.6v15.4c-5-3-9.8-3.6-15-1.6z" fill="#fff"/>
+      <path d="M39 21.5c-5.2-2.2-10-1.6-15 1.6v15.4c5-3 9.8-3.6 15-1.6z" fill="#DCE6FF"/>
+      <path d="M24 23.1v15.4" stroke="#7B5CF0" stroke-width="1.4"/>
+      <path d="M24 5.5l1.7 4 4 1.7-4 1.7-1.7 4-1.7-4-4-1.7 4-1.7z" fill="#FFC93C"/>
+      <circle cx="33.5" cy="9.5" r="1.6" fill="#FFE9A3"/><circle cx="14.5" cy="12" r="1.2" fill="#FFE9A3"/>
+    </svg>
+    <span class="wm"><b>Word Wizards</b><small>Learning-difference screener</small></span>
+  </button>
+  <div class="row">
+    <span class="pill" id="coins" title="Coins" hidden>🪙 <b id="coinN">0</b></span>
+    <button class="ghost" id="mute" aria-pressed="false">🔊</button>
   </div>
+</header>
+<div class="wrap">
   <main id="app" aria-live="polite"></main>
 </div>
 
+<script src="/static/vendor/html2pdf.bundle.min.js" defer></script>
 <script>
 /* =====================================================================
    Word Wizards — game-based screener for dyslexia, dyscalculia and attention signs
@@ -323,10 +380,10 @@ async function rhymeGame() {
 async function rhymeRound(pairs, n) {
   const u = UI(), R = newRound("rhyme", "phonology");
   for (const [i, p] of pairs.entries()) {
-    gameCard(`<div class="speaker" aria-hidden="true">🔊</div><p class="center muted" id="st">${u.listen}</p>
+    gameCard(`<div class="speaker" aria-hidden="true">🔊</div><p class="center muted" id="st" style="min-height:1.6em;margin:4px 0 12px">👂 ${u.listen}</p>
       <div class="two"><button class="c-green ans" id="y" disabled>👍 ${u.yes}</button><button class="c-orange ans" id="n" disabled>👎 ${u.no}</button></div>
       <p class="center" style="margin-top:16px"><button class="ghost" id="again" disabled>🔁 ${u.replay}</button></p>`, `${u.rhymeTitle} · ${n}/2 · ${i + 1}/${pairs.length}`);
-    const play = async () => { ["y", "n", "again"].forEach(id => $(id).disabled = true); await say(p.a); await sleep(450); await say(p.b); ["y", "n", "again"].forEach(id => $(id).disabled = false); $("st").textContent = ""; };
+    const play = async () => { $("st").style.visibility = "visible"; ["y", "n", "again"].forEach(id => $(id).disabled = true); await say(p.a); await sleep(450); await say(p.b); ["y", "n", "again"].forEach(id => $(id).disabled = false); $("st").style.visibility = "hidden"; };
     await play(); $("again").onclick = play;
     const { chosen, rt, el } = await oneTry([$("y"), $("n")], p.rhymes ? "y" : "n");
     (chosen === "y") === p.rhymes ? hit(R, rt, el) : miss(R, rt, `${p.a} – ${p.b}`, p.rhymes ? u.yes : u.no, p.rhymes ? u.no : u.yes);
@@ -515,6 +572,46 @@ async function gonogoGame() {
 /* =====================================================================
    SCREENS
    ===================================================================== */
+function landing() {
+  $("coins").hidden = true;
+  render(`<div class="card">
+    <div class="hero">
+      <div>
+        <span class="pill small" style="box-shadow:none;background:var(--teal-s)">🇮🇳 English · हिन्दी · తెలుగు</span>
+        <h1 style="margin-top:12px">Spot learning differences early, through play.</h1>
+        <p class="lead">Word Wizards is a set of 10 short island games, guided by Errol the owl. It looks for early signs of <b>dyslexia</b>, <b>dyscalculia</b> and <b>attention difficulties</b> in children aged 5–14, and gives parents and teachers a clear report on what to do next.</p>
+        <div class="row" style="margin-top:18px"><button class="btn sun" id="start">🚀 Get started</button></div>
+        <p class="small muted" style="margin-top:12px">About 12 minutes · results stay on this device</p>
+      </div>
+      <div class="hero-art" aria-hidden="true"><div class="big">🦉</div>
+        <span class="orb" style="top:8%;left:12%">📖</span><span class="orb" style="top:14%;right:10%;animation-delay:.6s">🔢</span>
+        <span class="orb" style="bottom:12%;left:6%;animation-delay:1.1s">⭐</span><span class="orb" style="bottom:6%;right:14%;animation-delay:.3s">🏝️</span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2>How it works</h2>
+    <div class="how" style="margin-top:22px">
+      <div><span>1</span><b>Grown-up sets up</b><br>Enter age and language, and answer 6 quick questions about known risk factors.</div>
+      <div><span>2</span><b>Child plays</b><br>Errol reads every instruction aloud, so no reading is needed to start. Each game is an island to unlock.</div>
+      <div><span>3</span><b>Clear report</b><br>A likelihood for each condition, when to see a professional, the child's mistake patterns, and an action plan.</div>
+    </div>
+    <h3>What the games check</h3>
+    <div class="skillchips">${GAMES.map(g => `<span>${g.icon} ${({visual:"Look-alike letters",phonology:"Rhyme & sounds",lettersound:"Letter sounds",decoding:"Reading new words",memory:"Sequence memory",naming:"Naming speed",spelling:"Spelling",numsense:"Number sense",numcompare:"Comparing numbers",attention:"Attention & impulse control"})[g.skill]}</span>`).join("")}</div>
+    <h3>Why it's different</h3>
+    <div class="feat">
+      <div><span class="e">🗣️</span><b>Built for Indian languages</b>Hindi and Telugu content, with letter look-alikes and vowel marks that trip up Indian readers.</div>
+      <div><span class="e">⏱️</span><b>Measures speed too</b>In regular scripts, dyslexia often shows as slow-but-correct reading, so speed is scored as well as accuracy.</div>
+      <div><span class="e">🧩</span><b>More than one condition</b>Dyslexia, dyscalculia and attention difficulties often occur together, so it checks all three.</div>
+      <div><span class="e">🔍</span><b>Explains every result</b>Shows which mistakes the child made, such as picking ब instead of व, and what influenced the score.</div>
+      <div><span class="e">🧭</span><b>Tells you what's next</b>When to see a doctor, who to see, home activities, school support and your rights under the RPwD Act.</div>
+      <div><span class="e">🔒</span><b>Private by design</b>Nothing is stored on a server. Reports are saved only on this device.</div>
+    </div>
+    <p class="center" style="margin-top:20px"><button class="btn sun" id="start2">🚀 Get started</button></p>
+  </div>`);
+  $("start").onclick = $("start2").onclick = setup;
+  app.querySelector(".hero-art").onclick = () => say(UI().owlHello);
+}
+
 const QUESTIONS = [
   ["family_reading", "A parent or sibling had trouble learning to read or spell"],
   ["speech_delay", "The child started speaking late or had speech therapy"],
@@ -528,8 +625,8 @@ function setup() {
   $("coins").hidden = true; document.documentElement.lang = S.lang;
   const hist = store.get("ww_history", []);
   render(`<div class="card">
-    <div class="owl-row"><button class="owl" aria-label="Ollie the owl">🦉</button>
-      <div class="bubble">Welcome! I'm <b>Ollie</b>. A grown-up sets things up, then the child plays 10 short games (about 12 minutes). You get a clear report at the end.</div></div>
+    <div class="owl-row"><button class="owl" aria-label="Errol the owl">🦉</button>
+      <div class="bubble" id="setupBubble">${UI().owlSetup || "Hello, grown-ups! I'm Errol. Please fill in this page, then give the device to the child, and I'll guide them through the islands."}</div></div>
     <div class="grid2">
       <div>
         <h3 style="margin-top:0">👧 About the child</h3>
@@ -557,6 +654,8 @@ function setup() {
     ${hist.length ? `<p class="center small"><button class="ghost" id="hist">📈 Past results (${hist.length})</button></p>` : ""}
   </div>`);
   app.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { read(); S.lang = b.dataset.lang; setup(); });
+  const setupLine = $("setupBubble").textContent; setTimeout(() => say(setupLine), 350);
+  app.querySelector(".owl").onclick = () => say(setupLine);
   app.querySelectorAll("[data-mod]").forEach(b => b.onclick = () => { S.modules[b.dataset.mod] = !S.modules[b.dataset.mod]; b.setAttribute("aria-pressed", S.modules[b.dataset.mod]); });
   app.querySelectorAll(".seg").forEach(s => s.querySelectorAll("button").forEach(b => b.onclick = () => {
     S.q[s.dataset.q] = b.dataset.v; s.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
@@ -576,22 +675,64 @@ function map(first = false) {
   $("coins").hidden = false;
   const games = activeGames(), next = games.find(g => !S.done.has(g.id));
   const u = UI();
-  const msg = first ? u.owlHello : next ? u.owlNext : u.owlDone;
-  render(`<div class="owl-row"><button class="owl" id="owl" aria-label="Hear again">🦉</button><div class="bubble">${msg}</div></div>
-    <div class="map">
-      <svg class="path" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M5 18 C 30 5, 60 30, 95 15 S 70 55, 50 50 S 5 70, 20 85 S 80 95, 95 85" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-dasharray="2 2" fill="none"/></svg>
+  const msg = first ? u.owlHello : next ? owlLine(u) : u.owlDone;
+  render(`<div class="owl-row"><button class="owl" id="owl" aria-label="Hear again">🦉</button><div class="bubble">${msg}${next && !first ? `<div class="small muted" style="margin-top:4px">${u.nextLabel || "Next island:"} <b>${next.icon} ${next.title(u)}</b></div>` : ""}</div></div>
+    <div class="map" id="mapbox">
+      <div class="waves" aria-hidden="true">${[12, 30, 50, 70, 88].map((top, i) => `<svg viewBox="0 0 1200 46" preserveAspectRatio="none" style="top:${top}%;animation-duration:${14 + i * 5}s;opacity:${.5 + (i % 2) * .4}"><path d="${"M0 23 " + Array.from({ length: 12 }, (_, k) => `Q ${k * 100 + 25} ${k % 2 ? 36 : 10} ${k * 100 + 50} 23 T ${k * 100 + 100} 23`).join(" ")}"/></svg>`).join("")}
+        ${Array.from({ length: 12 }, () => `<span class="sparkle" style="left:${Math.random() * 96}%;top:${Math.random() * 92}%;animation-delay:${-Math.random() * 3}s">✦</span>`).join("")}
+        <div class="foam"></div></div>
+      <svg class="path" id="pathsvg"></svg>
       <div class="islands">${games.map(g => {
         const done = S.done.has(g.id), cur = next && g.id === next.id;
         return `<button class="island ${done ? "done" : cur ? "current" : "locked"}" data-g="${g.id}" ${cur ? "" : "disabled"} aria-label="${g.title(u)}${done ? " (done)" : ""}">
           <div class="blob"><span>${g.icon}</span>${done ? `<span class="badge">⭐</span>` : !cur ? `<span class="badge">🔒</span>` : ""}</div>
           <div class="name">${g.title(u)}</div></button>`; }).join("")}</div>
     </div>
-    ${next ? `<p class="center" style="margin-top:18px"><button class="btn sun" id="play">▶ ${next.title(u)}</button></p>`
+    ${next ? `<p class="center" style="margin:14px 0 4px"><button class="btn sun" id="play">▶ ${next.title(u)}</button></p>`
            : `<p class="center" style="margin-top:18px"><button class="btn" id="fin">🏆 ${u.done}</button></p>`}
-    <p class="center progress">${S.done.size} / ${games.length} ⭐</p>`);
+    <p class="center progress maponly">${S.done.size} / ${games.length} ⭐</p>`);
   say(msg); $("owl").onclick = () => say(msg);
+  drawPath(); window.onresize = drawPath;
+  document.fonts?.ready.then(drawPath); setTimeout(drawPath, 400);
+  if (window.ResizeObserver) new ResizeObserver(drawPath).observe($("mapbox"));
   if (next) { const go = () => playGame(next); $("play").onclick = go; app.querySelector(`[data-g="${next.id}"]`).onclick = go; }
   else $("fin").onclick = finale;
+}
+
+// Errol never says the same line twice in a row
+let lastLine = null;
+function owlLine(u) {
+  const list = (u.owlNextList && u.owlNextList.length ? u.owlNextList : [u.owlNext]).filter(x => x !== lastLine);
+  lastLine = pick(list); return lastLine;
+}
+
+// islands snake left->right, then right->left, and a trail is drawn through them in play order
+function drawPath() {
+  const box = $("mapbox"); if (!box) return;
+  const cols = innerWidth < 640 ? 3 : 4, rows = Math.ceil(box.querySelectorAll(".island").length / cols);
+  box.style.setProperty("--cols", cols);
+  // island size so the whole map fits on one screen (no scrolling)
+  const free = innerHeight - (box.getBoundingClientRect().top + scrollY) - 150;
+  box.style.setProperty("--isl", Math.max(44, Math.min(92, free / rows - 52, (box.clientWidth - 40) / cols - 16)) + "px");
+  const isl = [...box.querySelectorAll(".island")];
+  isl.forEach((el, i) => { const r = Math.floor(i / cols), c = i % cols; el.style.gridRow = r + 1; el.style.gridColumn = r % 2 ? cols - c : c + 1; });
+  const b = box.getBoundingClientRect();
+  const pts = isl.map(el => {            // layout position (ignores CSS transforms like the pulse animation)
+    const blob = el.querySelector(".blob"); let x = blob.offsetWidth / 2, y = blob.offsetHeight / 2, n = blob;
+    while (n && n !== box) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+    return [x, y];
+  });
+  if (pts.length < 2) return;
+  // one smooth curve (Catmull-Rom -> cubic Bezier) through every island centre; the gold trail reuses the SAME segments
+  const segs = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    segs.push(` C${p1[0] + (p2[0] - p0[0]) / 6},${p1[1] + (p2[1] - p0[1]) / 6} ${p2[0] - (p3[0] - p1[0]) / 6},${p2[1] - (p3[1] - p1[1]) / 6} ${p2[0]},${p2[1]}`);
+  }
+  const start = `M${pts[0][0]},${pts[0][1]}`;
+  const doneN = isl.filter(el => el.classList.contains("done")).length;
+  const svg = $("pathsvg"); svg.setAttribute("viewBox", `0 0 ${b.width} ${b.height}`);
+  svg.innerHTML = `<path class="road" d="${start + segs.join("")}"/>${doneN ? `<path class="trail" d="${start + segs.slice(0, Math.min(doneN, segs.length)).join("")}"/>` : ""}`;
 }
 
 async function playGame(g) {
@@ -689,19 +830,19 @@ function showReport(r) {
       <div><p class="muted small" style="margin:0">Screening report · ${new Date().toLocaleDateString()}</p>
         <h1 style="margin:2px 0">${child.name}, age ${child.age}${child.grade ? ` · Class ${child.grade}` : ""}</h1>
         <p class="muted" style="margin:0">Played in ${CONTENT[child.language].name}</p></div>
-      <div class="row noprint"><button class="ghost" id="print">🖨️ Print / PDF</button><button class="ghost" id="dl">⬇ Data</button><button class="btn" id="new">New screening</button></div>
+      <div class="row noprint"><button class="ghost" id="dl">📄 Download PDF</button><button class="ghost" id="print">🖨️ Print</button><button class="btn" id="new">New screening</button></div>
     </div>
     ${r.see_professional ? `<div class="warn" style="margin-top:16px">🩺 <b>Recommendation:</b> please book an assessment with a professional. Take this report with you. See "Who to see" below.</div>` : ""}
     ${r.data_quality.map(d => `<div class="warn">⚠️ ${d} Consider playing again on another day.</div>`).join("")}
     <div class="tabs noprint" role="tablist">${[["sum", "Summary"], ["skills", "Skills & mistakes"], ["plan", "Action plan"], ["next", "If diagnosed"]].map(([id, t], i) => `<button role="tab" data-t="${id}" aria-selected="${i === 0}">${t}</button>`).join("")}</div>
 
-    <section class="tabpane" data-p="sum">${condHtml}
+    <section class="tabpane" data-p="sum"><h2 class="pdf-only" style="margin-top:16px">Summary</h2>${condHtml}
       ${r.notes.map(n => `<div class="note">💡 ${n}</div>`).join("")}
       ${r.questionnaire_flags.length ? `<p class="small"><b>From the questionnaire:</b> ${r.questionnaire_flags.join("; ")}.</p>` : ""}
       ${trend}
     </section>
 
-    <section class="tabpane" data-p="skills" hidden>
+    <section class="tabpane" data-p="skills" hidden><h2 class="pdf-only" style="margin-top:22px">Skills &amp; mistakes</h2>
       <h3 style="margin-top:0">Skill profile <span class="small muted">(compared with what is expected at age ${child.age})</span></h3>${skillsHtml}
       ${mem ? `<p class="small">🧠 Longest sequence remembered: <b>${mem.span || "under 2"}</b> steps.</p>` : ""}
       ${att ? `<p class="small">🎯 Attention game: missed <b>${Math.round(att.omission_rate * 100)}%</b> of stars, tapped <b>${Math.round(att.commission_rate * 100)}%</b> of clouds, reaction-time variability <b>${att.rt_variability}</b>.</p>` : ""}
@@ -712,7 +853,7 @@ function showReport(r) {
         <p class="small muted">Model: XGBoost trained on 3,644 children (Rello et al., 2020, PLOS ONE). It is one part of the reading index.</p>` : ""}
     </section>
 
-    <section class="tabpane" data-p="plan" hidden>
+    <section class="tabpane" data-p="plan" hidden><h2 class="pdf-only" style="margin-top:22px">Action plan</h2>
       ${r.action_plan.length ? `<p>Focus on these skills at home for the next 6–8 weeks. Little and often (10–15 minutes a day) works best.</p>
       <div class="plan">${r.action_plan.map(p => `<div class="p"><b>${SKILL_GAME[p.skill]?.icon || "📌"} ${p.label}</b><ul>${p.activities.map(a => `<li>${a}</li>`).join("")}</ul>
         ${SKILL_GAME[p.skill] ? `<button class="ghost noprint" data-practice="${SKILL_GAME[p.skill].id}">🎮 Practise with ${SKILL_GAME[p.skill].title(UI())}</button>` : ""}</div>`).join("")}</div>`
@@ -720,7 +861,7 @@ function showReport(r) {
       <h3>👩‍⚕️ Who to see</h3><ul class="small">${r.who_to_see.map(w => `<li>${w}</li>`).join("")}</ul>
     </section>
 
-    <section class="tabpane" data-p="next" hidden>
+    <section class="tabpane" data-p="next" hidden><h2 class="pdf-only" style="margin-top:22px">If diagnosed: what's next</h2>
       <p>If a professional confirms a learning difficulty, here is what usually helps next:</p>
       <div class="steps">${r.next_steps_if_diagnosed.map(s => `<div><b>${s.title}.</b> ${s.text}</div>`).join("")}</div>
     </section>
@@ -733,9 +874,19 @@ function showReport(r) {
   app.querySelectorAll("[data-practice]").forEach(b => b.onclick = () => { S.practice = true; playGame(GAMES.find(g => g.id === b.dataset.practice)); });
   $("print").onclick = () => window.print();
   $("new").onclick = setup;
-  $("dl").onclick = () => {
-    const blob = new Blob([JSON.stringify({ report: r, rounds: S.rounds }, null, 2)], { type: "application/json" });
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `screening-${child.name}-${Date.now()}.json`; a.click();
+  $("dl").onclick = async () => {
+    const card = app.querySelector(".report"), btn = $("dl");
+    if (!window.html2pdf) { window.print(); return; }      // library not loaded yet -> use the browser's "Save as PDF"
+    btn.disabled = true; btn.textContent = "⏳ Creating PDF…";
+    card.classList.add("pdfmode");
+    try {
+      await html2pdf().set({
+        margin: [10, 10, 12, 10], filename: `WordWizards-report-${child.name}-${new Date().toISOString().slice(0, 10)}.pdf`,
+        image: { type: "jpeg", quality: 0.95 }, html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["css", "legacy"], avoid: [".cond", ".skill", ".p", "tr", ".steps div", ".warn", ".note", "h3"] },
+      }).from(card).save();
+    } finally { card.classList.remove("pdfmode"); btn.disabled = false; btn.textContent = "📄 Download PDF"; }
   };
 }
 
@@ -765,7 +916,8 @@ function history() {
 (async () => {
   CONTENT = await (await fetch("/static/content.json")).json(); delete CONTENT._note;
   try { AUDIO = await (await fetch("/static/audio/manifest.json")).json(); } catch { AUDIO = {}; }
-  setup();
+  $("brand").onclick = () => { if (!app.querySelector(".tile,.stage,.pads,.two,.pics,.letters,.units,.nums") || confirm("Leave the game and go to the home page?")) landing(); };
+  landing();
 })();
 </script>
 </body>
