@@ -1,0 +1,41 @@
+{
+  "model_type": "XGBoost",
+  "full": {
+    "roc_auc": 0.857,
+    "recall_dyslexia": 0.791,
+    "precision_dyslexia": 0.3,
+    "balanced_accuracy": 0.784,
+    "threshold": 0.16,
+    "confusion_matrix [[TN,FP],[FN,TP]]": [
+      [
+        2528,
+        724
+      ],
+      [
+        82,
+        310
+      ]
+    ],
+    "n_features": 193,
+    "baseline_balanced_accuracy": 0.5
+  },
+  "portable": {
+    "roc_auc": 0.775,
+    "recall_dyslexia": 0.76,
+    "precision_dyslexia": 0.205,
+    "balanced_accuracy": 0.702,
+    "threshold": 0.23,
+    "confusion_matrix [[TN,FP],[FN,TP]]": [
+      [
+        2093,
+        1159
+      ],
+      [
+        94,
+        298
+      ]
+    ],
+    "n_features": 10,
+    "baseline_balanced_accuracy": 0.5
+  }
+}
