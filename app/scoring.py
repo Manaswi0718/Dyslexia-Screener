@@ -52,7 +52,7 @@ GUIDANCE = {
         "likely":      ("Several reading-related skills are clearly below what is expected for this age - a pattern often seen in children with dyslexia.",
                         "Book an assessment with a clinical psychologist or developmental paediatrician within the next 1-2 months. Take this report with you."),
         "very_likely": ("Most reading-related skills are well below what is expected for this age. This pattern is strongly associated with dyslexia.",
-                        "Book a full assessment as soon as possible. Early support works best, and a formal diagnosis unlocks school and exam support."),
+                        "Book a full assessment as soon as possible. Support helps most when it starts early, and a formal diagnosis makes the child eligible for school and exam support."),
     },
     "dyscalculia": {
         "unlikely":    ("Number skills look as expected for this age.", "No action needed now."),
@@ -119,7 +119,7 @@ ACTIVITIES = {
 NEXT_STEPS_IF_DIAGNOSED = [
     ("Get structured support", "Work with a special educator using structured, phonics-based (multi-sensory) teaching. Short, frequent sessions work best."),
     ("Ask the school for accommodations", "Extra time, oral answers, less copying from the board, printed notes, and not cutting marks for spelling in subjects like science."),
-    ("Get the SLD certificate", "Specific Learning Disability is recognised under India's RPwD Act, 2016. The certificate (and UDID card) unlocks board-exam concessions such as extra time, a scribe or reader, and third-language exemption."),
+    ("Get the SLD certificate", "Specific Learning Disability is recognised under India's RPwD Act, 2016. With the certificate (and UDID card) the child can get board-exam concessions such as extra time, a scribe or reader, and exemption from a third language."),
     ("Use assistive technology", "Audiobooks, text-to-speech, and dyslexia-friendly settings on phones and tablets."),
     ("Protect confidence", "Dyslexia is not about intelligence. Talk about the child's strengths, and explain that their brain learns to read in a different way."),
     ("Track progress", "Play this screener again every 6-8 weeks to see if skills are improving."),

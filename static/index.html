@@ -220,7 +220,7 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{co
 <script src="/static/vendor/html2pdf.bundle.min.js" defer></script>
 <script>
 /* =====================================================================
-   Word Wizards — game-based screener for dyslexia, dyscalculia and attention signs
+   Word Wizards: game-based screener for dyslexia, dyscalculia and attention signs
    Games collect accuracy, speed and every mistake; app/scoring.py builds the report.
    ===================================================================== */
 let CONTENT = {}, AUDIO = {};
@@ -386,7 +386,7 @@ async function rhymeRound(pairs, n) {
     const play = async () => { $("st").style.visibility = "visible"; ["y", "n", "again"].forEach(id => $(id).disabled = true); await say(p.a); await sleep(450); await say(p.b); ["y", "n", "again"].forEach(id => $(id).disabled = false); $("st").style.visibility = "hidden"; };
     await play(); $("again").onclick = play;
     const { chosen, rt, el } = await oneTry([$("y"), $("n")], p.rhymes ? "y" : "n");
-    (chosen === "y") === p.rhymes ? hit(R, rt, el) : miss(R, rt, `${p.a} – ${p.b}`, p.rhymes ? u.yes : u.no, p.rhymes ? u.no : u.yes);
+    (chosen === "y") === p.rhymes ? hit(R, rt, el) : miss(R, rt, `${p.a} / ${p.b}`, p.rhymes ? u.yes : u.no, p.rhymes ? u.no : u.yes);
     await sleep(700);
   }
   return endRound(R);
@@ -578,8 +578,8 @@ function landing() {
     <div class="hero">
       <div>
         <span class="pill small" style="box-shadow:none;background:var(--teal-s)">🇮🇳 English · हिन्दी · తెలుగు</span>
-        <h1 style="margin-top:12px">Spot learning differences early, through play.</h1>
-        <p class="lead">Word Wizards is a set of 10 short island games, guided by Errol the owl. It looks for early signs of <b>dyslexia</b>, <b>dyscalculia</b> and <b>attention difficulties</b> in children aged 5–14, and gives parents and teachers a clear report on what to do next.</p>
+        <h1 style="margin-top:12px">Catch reading and number difficulties early.</h1>
+        <p class="lead">Word Wizards is 10 short games that a child plays with Errol the owl. While the child plays, the app looks for early signs of dyslexia, dyscalculia and attention problems. At the end, the parent or teacher gets a report that says what to do next. It is meant for children aged 5 to 14.</p>
         <div class="row" style="margin-top:18px"><button class="btn sun" id="start">🚀 Get started</button></div>
         <p class="small muted" style="margin-top:12px">About 12 minutes · results stay on this device</p>
       </div>
@@ -592,19 +592,19 @@ function landing() {
     <h2>How it works</h2>
     <div class="how" style="margin-top:22px">
       <div><span>1</span><b>Grown-up sets up</b><br>Enter age and language, and answer 6 quick questions about known risk factors.</div>
-      <div><span>2</span><b>Child plays</b><br>Errol reads every instruction aloud, so no reading is needed to start. Each game is an island to unlock.</div>
-      <div><span>3</span><b>Clear report</b><br>A likelihood for each condition, when to see a professional, the child's mistake patterns, and an action plan.</div>
+      <div><span>2</span><b>Child plays</b><br>Errol reads out every instruction, so the child doesn't need to read to get started. Each game is one island on the map.</div>
+      <div><span>3</span><b>Report</b><br>How likely each difficulty is, whether to see a professional, which mistakes the child made, and what to practise.</div>
     </div>
     <h3>What the games check</h3>
     <div class="skillchips">${GAMES.map(g => `<span>${g.icon} ${({visual:"Look-alike letters",phonology:"Rhyme & sounds",lettersound:"Letter sounds",decoding:"Reading new words",memory:"Sequence memory",naming:"Naming speed",spelling:"Spelling",numsense:"Number sense",numcompare:"Comparing numbers",attention:"Attention & impulse control"})[g.skill]}</span>`).join("")}</div>
-    <h3>Why it's different</h3>
+    <h3>A few things to know</h3>
     <div class="feat">
-      <div><span class="e">🗣️</span><b>Built for Indian languages</b>Hindi and Telugu content, with letter look-alikes and vowel marks that trip up Indian readers.</div>
-      <div><span class="e">⏱️</span><b>Measures speed too</b>In regular scripts, dyslexia often shows as slow-but-correct reading, so speed is scored as well as accuracy.</div>
-      <div><span class="e">🧩</span><b>More than one condition</b>Dyslexia, dyscalculia and attention difficulties often occur together, so it checks all three.</div>
-      <div><span class="e">🔍</span><b>Explains every result</b>Shows which mistakes the child made, such as picking ब instead of व, and what influenced the score.</div>
-      <div><span class="e">🧭</span><b>Tells you what's next</b>When to see a doctor, who to see, home activities, school support and your rights under the RPwD Act.</div>
-      <div><span class="e">🔒</span><b>Private by design</b>Nothing is stored on a server. Reports are saved only on this device.</div>
+      <div><span class="e">🗣️</span><b>Hindi and Telugu</b>We picked letters and words that Indian children often mix up, like ब and व or ప and వ, and the vowel signs.</div>
+      <div><span class="e">⏱️</span><b>Speed counts</b>Hindi and Telugu are spelled the way they sound, so a child with dyslexia may read correctly but slowly. Every answer is timed.</div>
+      <div><span class="e">🧩</span><b>Reading, numbers, attention</b>These difficulties often show up together, so the app checks for each of them.</div>
+      <div><span class="e">🔍</span><b>See the mistakes</b>The report lists what the child got wrong, for example choosing ब when the answer was व.</div>
+      <div><span class="e">🧭</span><b>What to do next</b>When to see a doctor and who to see, what to practise at home, and the school support a child can get under the RPwD Act.</div>
+      <div><span class="e">🔒</span><b>Stays on your device</b>Nothing is saved on our server. Past reports are kept only in this browser.</div>
     </div>
     <p class="center" style="margin-top:20px"><button class="btn sun" id="start2">🚀 Get started</button></p>
   </div>`);
@@ -900,7 +900,7 @@ function trendChart(hist) {
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Index over time">
     ${[25, 50, 75].map(v => `<line x1="30" x2="${W - 20}" y1="${y(v)}" y2="${y(v)}" stroke="#E7E2F3"/><text x="4" y="${y(v) + 4}" font-size="10" fill="#5D6785">${v}</text>`).join("")}
     ${lines}${hist.map((h, i) => `<text x="${x(i)}" y="${H - 4}" font-size="9" text-anchor="middle" fill="#5D6785">${new Date(h.date).toLocaleDateString(undefined, { day: "numeric", month: "short" })}</text>`).join("")}</svg>
-    <p class="small">${keys.filter(k => hist.some(h => h.idx[k] != null)).map(k => `<span style="color:${cols[k]};font-weight:700">● ${k}</span>`).join(" &nbsp; ")} <span class="muted">— lower is better</span></p>`;
+    <p class="small">${keys.filter(k => hist.some(h => h.idx[k] != null)).map(k => `<span style="color:${cols[k]};font-weight:700">● ${k}</span>`).join(" &nbsp; ")} <span class="muted">(lower is better)</span></p>`;
 }
 
 function history() {

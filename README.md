@@ -1,119 +1,109 @@
-# 🦉 Word Wizards: spot learning differences early, through play
+# Word Wizards
 
-**Neural Storm 2026 · Track: Human Impact · Problem statement HI-03: Adaptive Learning for Students with Disabilities**
+A game-based screener for dyslexia, dyscalculia and attention problems in children, in English, Hindi and Telugu.
 
-Word Wizards is a set of 10 short island games, guided by Errol the owl, that screens children aged 5–14 for early signs of **dyslexia**, **dyscalculia** and **attention difficulties**. It works in **English, Hindi and Telugu**. Parents and teachers get a clear report: a likelihood for each condition, when to see a professional, the child's exact mistake patterns, and an action plan with adaptive practice games.
+Neural Storm 2026 · Track: Human Impact · Problem statement **HI-03** (Adaptive Learning for Students with Disabilities)
 
-🔗 **Live demo:** _add your Render link here_ (free hosting: the first visit may take about 1 minute to wake up) · 🎬 **Demo video:** _add your Drive link here_
+- Live demo: https://word-wizards-uix0.onrender.com (it runs on Render's free plan, so the first visit can take about a minute to load)
+- Demo video: _add the Drive link here_
 
-> ⚠️ Word Wizards is a **screening tool, not a diagnosis**. It has not yet been validated with Indian children (see [Validation roadmap](#-limitations--validation-roadmap)).
+This is a screening tool. It can't diagnose anything, and we haven't tested it with Indian children yet (more on that under Limitations).
 
----
+## Team
 
-## 👥 Team
-
-| Team name | _your team name_ |
+| | |
 |---|---|
-| Members | _Name (role)_ |
-| College | _your college_ |
+| Team name | Terminal Breakers |
+| Members | Manaswi C | Reenu P | Harshita V K |
+| College | Nitte Meenakshi Institute of Technology |
 
----
+## Why we built this
 
-## 🧩 The problem
+Somewhere around 5 to 15% of children have dyslexia. In India it usually gets noticed late, after a child has been struggling at school for years. We looked at the screening tools that exist and kept running into the same few problems:
 
-- Dyslexia affects an estimated **5–15% of children**. In India it is usually noticed only after years of "wait to fail", when the best window for support has already passed.
-- Most screening tools are **English-only, paid, or need special hardware or a trained administrator**. India's own validated tool, DALI (NBRC), covers Hindi, Marathi, Kannada and English, but **not Telugu**.
-- In **regular scripts** like Hindi and Telugu (spelled almost exactly as they sound), dyslexic children often read **correctly but slowly**. English-style tools that only count errors miss them.
-- Learning differences **often occur together**: a child with one condition is 2–3 times more likely to have another. Most screeners only check one.
-- Parents get a score but **no clear next step**.
+- Most of them are in English. DALI, the screener developed at NBRC, covers Hindi, Marathi, Kannada and English, but there is nothing validated for Telugu.
+- Many need a trained adult to run them, a paid school licence, or special hardware (Lexplore, for example, uses eye-tracking).
+- Hindi and Telugu are spelled almost exactly the way they sound. Children with dyslexia in these languages often read correctly but slowly, so a test that only counts mistakes can miss them.
+- Dyslexia, dyscalculia and ADHD often come together. A child with one is 2 to 3 times more likely to have another, but most tools check for one thing.
+- Parents get a score and no idea what to do with it.
 
-We narrowed HI-03 to: **early, game-based screening that adapts to each child, plus a personalised practice plan, for children with or at risk of learning disabilities, in Indian languages.**
+For HI-03 we narrowed the problem to this: early screening, through games, for children who may have a learning disability, in Indian languages, followed by a practice plan for each child's weak areas.
 
-## 🔍 What existing tools do, and the gaps we fill
+## What the app does
 
-| Must-have in a good screener | Word Wizards |
+A parent or teacher fills in a short setup page: the child's age and class, the language, which checks to run, and six yes/no questions about known risk factors (family history of reading trouble, late speech, and so on).
+
+Then the child plays up to 10 one-minute games on an island map. Errol the owl reads out every instruction, so a child who can't read yet can still play.
+
+| Game | What it checks |
 |---|---|
-| Phonological awareness | 🚀 Rhyme Rocket |
-| Rapid naming / speed | ⚡ Quick Match |
-| Letter–sound knowledge | 🕵️ Sound Detective |
-| Decoding (made-up words) | 👽 Real or Alien? |
-| Spelling | 🧩 Spell Builder (with a look-alike "trap" tile) |
-| Working memory | 🧠 Echo Memory |
-| Visual discrimination (b/d, ब/व, ప/వ) | 🔍 Mirror Hunt |
-| Risk-factor questionnaire (family history, speech delay…) | ✅ 6 questions for the parent |
-| Age-adjusted results | ✅ every skill compared with age expectations |
-| Clear referral guidance | ✅ "When to see a professional" for each condition |
+| Mirror Hunt | telling apart look-alike letters (b/d, ब/व, ప/వ) |
+| Rhyme Rocket | hearing whether two words rhyme (no reading needed) |
+| Sound Detective | matching a spoken sound to its letter |
+| Real or Alien? | reading made-up words |
+| Echo Memory | remembering a sequence |
+| Quick Match | how fast a spoken word is linked to a picture |
+| Spell Builder | building a word from letter tiles, with one look-alike tile as a trap |
+| Dot Flash | seeing how many dots there are without counting |
+| Bigger Number | comparing numbers (place value for children 8 and up) |
+| Catch the Star | tapping stars and holding back on rain clouds (attention and impulse control) |
 
-| Gap in existing tools | How we fill it |
-|---|---|
-| English-only, or no Telugu | English, **हिन्दी** and **తెలుగు**, with script-specific content (vowel marks, conjuncts, look-alike aksharas) |
-| Need a trained adult to read the instructions | Errol **reads every instruction aloud** (neural Indian voices), so a child who can't read yet can still take part |
-| Count errors only | Scores **speed as well as accuracy**, with more weight on speed for Hindi and Telugu |
-| Screen one condition | **Reading + Numbers (dyscalculia) + Attention** modules |
-| A score with no explanation | **Mistake patterns** ("picked ब instead of व, 3 times") plus what influenced the AI model |
-| No next steps | Action plan, home activities, **adaptive practice games**, who to see in India, school accommodations, and **RPwD Act 2016** rights (SLD certificate → extra time, scribe, third-language exemption) |
-| Paid / special hardware | Runs in any browser on phones and laptops; results stay on the device |
+Each answer counts once, with no retries. The app saves accuracy, response time, and every mistake (what the right answer was and what the child picked).
 
-## 🎮 How it works
+At the end, the parent gets a report with:
 
-1. **Grown-up sets up**: age, class, language, which modules to run, and 6 quick risk-factor questions.
-2. **Child plays**: 10 islands on an adventure map, each a 1-minute game. Errol guides and encourages; coins and stars keep children engaged. Every answer counts once (no retries), and every mistake is logged with what was expected, what was chosen and how long it took.
-3. **Report**: a likelihood gauge (0–100) for each condition, in bands of **Unlikely / Possible / Likely / Very likely**, each with "what this means" and "when to see a professional". Plus a skill profile, mistake patterns, an action plan, "if diagnosed, what's next", a progress chart across re-screens, and a **PDF download**.
+- a score from 0 to 100 for each condition, in four bands (Unlikely, Possible, Likely, Very likely), with a plain explanation and advice on whether and when to see a professional
+- each skill compared with what we expect at the child's age
+- the child's mistakes grouped into patterns, for example "picked ब instead of व, 3 times"
+- home activities for the three weakest skills, and a button to practise each one in the game
+- who to see in India, and what usually helps after a diagnosis (school accommodations, the SLD certificate under the RPwD Act 2016, assistive technology)
+- a chart of past results if the child is screened again, and a PDF download
 
-```mermaid
-flowchart LR
-  A[Parent setup + questionnaire] --> B[10 mini-games<br/>browser, JS]
-  B -->|accuracy, speed, every mistake| C[FastAPI backend · Python]
-  C --> D[XGBoost model<br/>trained on 3,644 children]
-  C --> E[Age-adjusted skill scoring<br/>app/scoring.py]
-  D --> F[Likelihood index per condition]
-  E --> F
-  A --> F
-  F --> G[Report: gauges, when to see a doctor,<br/>mistake patterns, action plan, PDF]
-  G -->|practise weak skills| B
+## How the score is calculated
+
+For dyslexia:
+
+```
+index = 0.7 × skill score + 0.3 × ML model score + questionnaire points (max 15)
 ```
 
-### How the likelihood index is calculated
+The skill score compares the child's accuracy in each reading game with what we expect at that age, measured from chance level. Slow answers add to the score on top of mistakes, with more weight for Hindi and Telugu. A child answering at random always ends up high, and a child who is accurate but very slow in Telugu still gets flagged.
 
-For **dyslexia**:
+The ML model is an XGBoost classifier on summary features (accuracy, miss rate, hits, clicks, age). The report shows the three features that pushed its estimate up or down, using SHAP values.
 
-`index = 0.7 × age-adjusted skill concern + 0.3 × ML model + questionnaire points (max 15)`
+Bands: under 25 Unlikely, 25 to 49 Possible, 50 to 74 Likely, 75 and above Very likely.
 
-- **Skill concern (0–100)** for each skill compares the child's accuracy with the age expectation (relative to chance level). Slowness is added on top, weighted more heavily for Hindi and Telugu. As a result, a child who answers wrongly or at random always scores high, and a child who is accurate but very slow in Telugu is still flagged.
-- **ML model**: XGBoost on summary features (accuracy, miss rate, hits, clicks, age). The top reasons are explained with **SHAP**.
-- **Bands:** <25 Unlikely · 25–49 Possible · 50–74 Likely · ≥75 Very likely.
-- **Dyscalculia** uses the two number games plus the questionnaire. **Attention** uses missed stars, impulsive taps and reaction-time variability from the go/no-go game.
-- **Data-quality check:** warns if the child seemed to tap at random, and notes when attention difficulties may have lowered other scores.
+Dyscalculia uses the two number games plus the questionnaire. The attention score uses missed stars, taps on clouds, and how much the reaction time varies. The report also warns when the child seemed to be tapping at random, and when attention problems may have pulled down the other scores.
 
-## 📊 Model performance
+## Model results
 
-Trained on the open dataset from *Rello et al. (2020), "Predicting risk of dyslexia with an online gamified test", PLOS ONE*: **3,644 participants, 392 with a professional dyslexia diagnosis**. We used 5-fold stratified cross-validation, with the decision threshold chosen for balanced accuracy.
+We trained on the open dataset from Rello et al. (2020), "Predicting risk of dyslexia with an online gamified test" (PLOS ONE). It has 3,644 participants, 392 of them with a professional dyslexia diagnosis. We used 5-fold stratified cross-validation and picked the decision threshold that gave the best balanced accuracy.
 
-| Model | Features | ROC-AUC | Recall (dyslexia) | Precision | Balanced accuracy |
+| Model | Features | ROC-AUC | Recall | Precision | Balanced accuracy |
 |---|---|---|---|---|---|
-| Baseline (always "no dyslexia") | – | 0.50 | 0.00 | – | 0.50 |
-| **Full model** | 193 per-exercise features | **0.857** | **0.791** | 0.300 | **0.784** |
-| **Portable model** (used in the app) | 10 language-independent features | 0.775 | 0.760 | 0.205 | 0.702 |
+| Baseline (always predicts "no dyslexia") | none | 0.50 | 0.00 | n/a | 0.50 |
+| Full model | 193 per-exercise features | 0.857 | 0.791 | 0.300 | 0.784 |
+| Portable model (used in the app) | 10 summary features | 0.775 | 0.760 | 0.205 | 0.702 |
 
-- The full model matches the original paper (which reported over 80% recall), which validates our pipeline.
-- The **portable model** gives up a little accuracy so that it works with *our* games in *any* language. It needs only summary features that every game produces.
-- Precision is low by design. Only about 11% of the dataset has dyslexia, and a screener should favour **recall**, because missing a child is worse than a follow-up check.
+The full model gets close to the paper's own result (a little over 80% recall), so we're fairly confident the pipeline is right. The app uses the portable model because our games are different from the ones in the study. It only needs summary numbers that any of our games can produce, in any language, and it loses only a few points of recall for that.
 
-Run `python ml/train.py data/Dyt-desktop.csv` to reproduce. The results are saved to `models/metrics.json` and `models/shap_summary.png`.
+Precision is low on purpose. Only about 11% of the dataset has dyslexia, and for a screener, missing a child is worse than sending one for an extra check.
 
-## 🛠️ Tech stack
+To reproduce: `python ml/train.py data/Dyt-desktop.csv`. Results are written to `models/metrics.json` and `models/shap_summary.png`.
 
-| Layer | Tools |
+## Tech stack
+
+| Part | What we used |
 |---|---|
-| ML / AI (Python) | XGBoost, scikit-learn, pandas, NumPy, **SHAP** values (XGBoost `pred_contribs` on the server; `shap` for training plots) |
-| Scoring engine (Python) | `app/scoring.py`: age-adjusted skill scores, likelihood index, guidance |
-| Backend | FastAPI + Uvicorn |
-| Frontend | Plain HTML/CSS/JavaScript (no framework), Web Audio API for sound effects, SVG for the map, gauges and charts |
-| Speech | Microsoft Edge neural TTS via `edge-tts` (en-IN Neerja, hi-IN Swara, te-IN Shruti), pre-generated as mp3 files, with gTTS and the browser voice as fallbacks |
-| PDF report | html2pdf.js (bundled locally) |
-| Deployment | Docker on Render (free web service) |
+| ML | Python: XGBoost, scikit-learn, pandas, NumPy. SHAP values come from XGBoost's `pred_contribs` on the server; the `shap` library is used for the training plot. |
+| Scoring | `app/scoring.py` (Python) |
+| Backend | FastAPI and Uvicorn |
+| Frontend | HTML, CSS and JavaScript, no framework. Sound effects use the Web Audio API; the map, gauges and charts are SVG. |
+| Speech | Microsoft Edge neural voices through the `edge-tts` package (Neerja for English, Swara for Hindi, Shruti for Telugu), saved as mp3 files. gTTS and the browser's own voice are fallbacks. |
+| PDF report | html2pdf.js, bundled with the app |
+| Hosting | Docker on Render (free plan) |
 
-## 🚀 Setup and run locally
+## Running it locally
 
 ```bash
 git clone https://github.com/Manaswi0718/Dyslexia-Screener.git
@@ -121,95 +111,91 @@ cd Dyslexia-Screener
 python -m venv venv
 venv\Scripts\activate            # Mac/Linux: source venv/bin/activate
 pip install -r requirements.txt
+uvicorn app.main:app --reload    # then open http://127.0.0.1:8000
+```
 
-# (optional) retrain the model: download the dataset from
-# https://doi.org/10.34740/kaggle/dsv/1617514 into data/, then:
+The trained model and the audio files are in the repo, so the app works right after installing.
+
+Optional steps:
+
+```bash
+# retrain the model (download the dataset from https://doi.org/10.34740/kaggle/dsv/1617514 into data/)
 python ml/train.py data/Dyt-desktop.csv
 
-# (optional) regenerate the spoken audio (needs internet once)
+# regenerate the spoken audio (needs internet)
 python tools/gen_audio.py
-
-uvicorn app.main:app --reload    # open http://127.0.0.1:8000
 ```
 
-The trained model (`models/portable_model.joblib`) and the audio clips are included, so the app runs straight after `pip install`.
+With Docker: `docker build -t word-wizards .` and then `docker run -p 7860:7860 word-wizards`, then open http://localhost:7860.
 
-**Run with Docker:** `docker build -t word-wizards . && docker run -p 7860:7860 word-wizards`, then open http://localhost:7860
-
-### Project structure
+### Folders
 
 ```
-app/main.py            FastAPI: serves the games, /api/report
-app/scoring.py         age-adjusted scoring, likelihood index, guidance text
-ml/train.py            trains + evaluates the full and portable models
+app/main.py            FastAPI app, serves the games and /api/report
+app/scoring.py         skill scores, the likelihood index, report text
+ml/train.py            trains and evaluates the two models
 models/                trained model, metrics.json, shap_summary.png
-static/index.html      the whole app: landing, setup, map, 10 games, report
+static/index.html      the whole front end (landing, setup, map, games, report)
 static/content.json    all words and instructions in English, Hindi and Telugu
-static/audio/          pre-generated speech (neural voices)
-tools/                 audio generation and content scripts
-Dockerfile             deployment
+static/audio/          pre-generated speech
+tools/                 scripts for audio and content
+Dockerfile             used for deployment
 ```
 
-## 📸 Screenshots
+## Screenshots
 
-**Landing page**
+Landing page
 ![Landing](docs/screenshots/landing.png)
 
-**Grown-up setup: Errol speaks, plus the risk-factor questionnaire**
+Setup page (Errol talks here, and the parent answers the risk-factor questions)
 ![Setup](docs/screenshots/setup.png)
 
-**Island adventure map**
+The island map
 ![Map](docs/screenshots/map.png)
 
-**On phones: Mirror Hunt, Real or Alien? (Hindi), Echo Memory, Dot Flash (Hindi)**
+On a phone: Mirror Hunt, Real or Alien? (Hindi), Echo Memory, Dot Flash (Hindi)
 ![Mobile](docs/screenshots/mobile.png)
 
-**Report: clear likelihood and when to see a professional**
+Report summary
 ![Report](docs/screenshots/report.png)
 ![Conditions](docs/screenshots/conditions.png)
 
-**Report: skill profile compared with age expectations**
+Skills compared with age expectations
 ![Skills](docs/screenshots/skills.png)
 
-**Report: exact mistake patterns**
+Mistake patterns
 ![Mistakes](docs/screenshots/mistakes.png)
 
-**Action plan with practice games, and what to do if diagnosed**
+Action plan, and what to do after a diagnosis
 | | |
 |---|---|
 | ![Action plan](docs/screenshots/action-plan.png) | ![Next steps](docs/screenshots/next-steps.png) |
 
-## 🧪 Limitations and validation roadmap
+## Limitations and what's needed next
 
-We want to be clear about what this prototype can and cannot claim:
+- We have not tested this with Indian children. The model was trained on Spanish-speaking participants doing different exercises, so we don't know yet how accurate the full app is in Hindi, Telugu or English.
+- The age expectations are our own estimates based on how hard each task is. They are not measured norms.
+- The attention game can't diagnose ADHD. It only flags signs worth mentioning to a doctor.
 
-- **Not yet validated with Indian children.** The model was trained on Spanish-speaking participants doing different exercises. The full app's real accuracy in Hindi, Telugu and English is unknown until it is tested.
-- **The age expectations are provisional.** They were set from task difficulty, not measured norms.
-- **The attention module cannot diagnose ADHD.** It only flags signs worth discussing with a doctor.
+Before anyone could use this professionally, it would need a pilot with a few hundred children per language, including children already diagnosed by psychologists (NBRC or a child guidance clinic would be good partners). That would give real sensitivity and specificity numbers and age norms for each language and class. It would also need a test-retest check, ethics approval, and compliance with India's Digital Personal Data Protection Act, 2023.
 
-**To make it professional-grade:**
-1. A pilot with a few hundred children per language, including children diagnosed by psychologists (for example, in partnership with NBRC / DALI or child-guidance clinics), to measure sensitivity and specificity.
-2. Age norms per language and class from that data.
-3. Test–retest reliability.
-4. Ethics approval and compliance with India's Digital Personal Data Protection Act, 2023.
+## Ethics and privacy
 
-## 🔒 Ethics and privacy
+- The parent ticks a consent box before starting. There are no accounts. The server only calculates the report and keeps nothing; past results stay in the browser.
+- The report never says a child "has" a condition. Every page carries a disclaimer, and the report recommends a professional assessment whenever any score is Likely or higher.
+- We used no real children's data. We tested with our own play-throughs and with automated test players.
 
-- A consent checkbox before starting. No accounts, and nothing is stored on a server: the backend only computes the report, and session history stays in the browser.
-- Wording is careful and non-diagnostic, every page carries a disclaimer, and the report advises a professional assessment whenever anything is Likely or above.
-- No real children's data was used. Testing was done by the team and with automated test players.
+## AI tools used
 
-## 🤖 AI tools used
+- Claude (Anthropic): planning, research on existing screeners and the evidence behind each game, help writing and debugging code, and drafting this README.
+- _Add any other tools you used._
 
-- **Claude (Anthropic)**: planning, research (existing screeners, the research behind the indicators, Indian legal context), code generation and debugging, and drafting this README.
-- _Add any others you used (for example ChatGPT or Copilot)._
+We read, ran and tested all the AI-generated code ourselves.
 
-All AI-generated code was reviewed, run and tested by the team.
+## References
 
-## 📚 Credits and references
-
-- Rello, L., Baeza-Yates, R., Ali, A., Bigham, J. P., & Serra, M. (2020). *Predicting risk of dyslexia with an online gamified test.* PLOS ONE 15(12): e0241687. Dataset: https://doi.org/10.34740/kaggle/dsv/1617514 (see the Kaggle page for its licence).
-- DALI: Dyslexia Assessment for Languages of India, National Brain Research Centre.
-- van Bergen et al. (2025). *Co-occurrence and causality among ADHD, dyslexia, and dyscalculia.* Psychological Science.
-- Rights of Persons with Disabilities Act, 2016 (Specific Learning Disabilities).
-- html2pdf.js (MIT). Fonts: Lexend, Noto Sans Devanagari and Noto Sans Telugu (Google Fonts, OFL).
+- Rello, L., Baeza-Yates, R., Ali, A., Bigham, J. P., & Serra, M. (2020). Predicting risk of dyslexia with an online gamified test. PLOS ONE 15(12): e0241687. Dataset: https://doi.org/10.34740/kaggle/dsv/1617514 (see the Kaggle page for its licence).
+- DALI (Dyslexia Assessment for Languages of India), National Brain Research Centre.
+- van Bergen, E. et al. (2025). Co-occurrence and causality among ADHD, dyslexia, and dyscalculia. Psychological Science.
+- Rights of Persons with Disabilities Act, 2016.
+- html2pdf.js (MIT licence). Fonts: Lexend, Noto Sans Devanagari and Noto Sans Telugu (Google Fonts, OFL).
