@@ -11,7 +11,7 @@ A game-based screener for dyslexia, dyscalculia and attention problems in childr
 Neural Storm 2026 · Track: Human Impact · Problem statement **HI-03** (Adaptive Learning for Students with Disabilities)
 
 - Live demo: https://word-wizards-uix0.onrender.com (it runs on Render's free plan, so the first visit can take about a minute to load)
-- Demo video: _add the Drive link here_
+- Demo video: https://drive.google.com/file/d/1XJhTaycIsEsHEc99ZFh40TEQWG1qhQKn/view?usp=drivesdk
 
 This is a screening tool. It can't diagnose anything, and we haven't tested it with Indian children yet (more on that under Limitations).
 
@@ -19,9 +19,9 @@ This is a screening tool. It can't diagnose anything, and we haven't tested it w
 
 | | |
 |---|---|
-| Team name | _your team name_ |
-| Members | _name (role)_ |
-| College | _your college_ |
+| Team name | Terminal Breakers |
+| Members | Manaswi C | Reenu P | Harshita V K |
+| College | Nitte Meenakshi Institute of Technology |
 
 ## Why we built this
 
