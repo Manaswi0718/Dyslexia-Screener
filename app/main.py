@@ -97,3 +97,8 @@ app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 @app.get("/")
 def home():
     return FileResponse(ROOT / "static" / "index.html")
+
+
+@app.get("/health")
+def health():
+    return {"ok": True}
