@@ -4,3 +4,5 @@ matplotlib
 shap==0.51.0
 gTTS
 edge-tts
+pytest
+httpx

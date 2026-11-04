@@ -1,6 +1,12 @@
 # Word Wizards
 
+[![tests](https://github.com/Manaswi0718/Dyslexia-Screener/actions/workflows/tests.yml/badge.svg)](https://github.com/Manaswi0718/Dyslexia-Screener/actions/workflows/tests.yml)
+
 A game-based screener for dyslexia, dyscalculia and attention problems in children, in English, Hindi, Telugu, Tamil and Kannada.
+
+> Picture a nine-year-old in a government school in Hyderabad. When the teacher asks a question out loud, she knows the answer. When she has to read it, ప and వ keep trading places, the words come out slowly, and the class laughs. By Class 4 she has been called lazy so many times that she believes it. Nobody at her school has mentioned dyslexia. Her parents couldn't afford a private assessment, and the tests they've heard of are in English anyway.
+>
+> She isn't a real child we met. She is a mix of what teachers, parents and research describe, and there are millions of children like her. We built Word Wizards for them: something a parent or teacher can open on any phone, in the child's own language, that turns ten minutes of play into a clear answer to "should we get help, and what do we do next?"
 
 Neural Storm 2026 · Track: Human Impact · Problem statement **HI-03** (Adaptive Learning for Students with Disabilities)
 
@@ -19,7 +25,7 @@ This is a screening tool. It can't diagnose anything, and we haven't tested it w
 
 ## Why we built this
 
-Somewhere around 5 to 15% of children have dyslexia. In India it usually gets noticed late, after a child has been struggling at school for years. We looked at the screening tools that exist and kept running into the same few problems:
+Somewhere around 5 to 15% of children have dyslexia. That's two to six children in a class of forty. In India it usually gets noticed late, after years of bad marks and being told to try harder. By then many children have decided they are "not good at studies", and that belief often lasts longer than the reading problem itself. Help works best when it starts early, around the first few years of school, which is exactly when most children here are still being missed. We looked at the screening tools that exist and kept running into the same few problems:
 
 - Most of them are in English. DALI, the screener developed at NBRC, covers Hindi, Marathi, Kannada and English, but there is nothing validated for Telugu or Tamil.
 - Many need a trained adult to run them, a paid school licence, or special hardware (Lexplore, for example, uses eye-tracking).
@@ -85,11 +91,35 @@ We trained on the open dataset from Rello et al. (2020), "Predicting risk of dys
 | Full model | 193 per-exercise features | 0.857 | 0.791 | 0.300 | 0.784 |
 | Portable model (used in the app) | 10 summary features | 0.775 | 0.760 | 0.205 | 0.702 |
 
+What that means in children: out of the 392 children with dyslexia in the data, the model we use in the app found 298 and missed 94. It also flagged 1,159 children without dyslexia for a closer look, which is the price of not missing more of them.
+
+| Portable model (5-fold CV) | Predicted "check further" | Predicted "fine" |
+|---|---|---|
+| Child has dyslexia (392) | 298 | 94 |
+| Child does not (3,252) | 1,159 | 2,093 |
+
+Which features the model relies on (SHAP values on the training data):
+
+![SHAP summary](models/shap_summary.png)
+
 The full model gets close to the paper's own result (a little over 80% recall), so we're fairly confident the pipeline is right. The app uses the portable model because our games are different from the ones in the study. It only needs summary numbers that any of our games can produce, in any language, and it loses only a few points of recall for that.
 
 Precision is low on purpose. Only about 11% of the dataset has dyslexia, and for a screener, missing a child is worse than sending one for an extra check.
 
 To reproduce: `python ml/train.py data/Dyt-desktop.csv`. Results are written to `models/metrics.json` and `models/shap_summary.png`.
+
+## Testing
+
+There are 16 automated tests in `tests/`, and they run on every push through GitHub Actions (the badge at the top). They check that:
+
+- a child who plays well gets "Unlikely" and a child who struggles gets "Likely" or "Very likely"
+- random guessing never looks normal, even when the answers are fast
+- slow but correct reading counts for more in Hindi, Telugu, Tamil and Kannada than in English
+- the questionnaire can't add more than 15 points, and the attention game picks up impulsive tapping
+- the API returns a complete report and rejects broken requests
+- every language has every piece of text, no look-alike round contains its own answer, no made-up word is also on the real-word list, and the spoken words have audio
+
+Run them with `pytest -q`.
 
 ## Tech stack
 
@@ -191,6 +221,10 @@ Before anyone could use this professionally, it would need a pilot with a few hu
 - _Add any other tools you used._
 
 We read, ran and tested all the AI-generated code ourselves.
+
+## Why it matters
+
+A child who gets help at seven instead of twelve gets five more years of being supported instead of being blamed. Most of what that takes is noticing early, and noticing shouldn't depend on which language a child speaks or whether their parents can pay for a test. That's the part we tried to fix.
 
 ## References
 
