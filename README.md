@@ -152,13 +152,32 @@ Dockerfile             deployment
 
 ## 📸 Screenshots
 
-| Landing | Island map | A game |
-|---|---|---|
-| ![Landing](docs/screenshots/landing.png) | ![Map](docs/screenshots/map.png) | ![Game](docs/screenshots/game.png) |
+**Landing page**
+![Landing](docs/screenshots/landing.png)
 
-| Report: likelihood | Report: mistake patterns | Mobile |
-|---|---|---|
-| ![Report](docs/screenshots/report.png) | ![Mistakes](docs/screenshots/mistakes.png) | ![Mobile](docs/screenshots/mobile.png) |
+**Grown-up setup: Errol speaks, plus the risk-factor questionnaire**
+![Setup](docs/screenshots/setup.png)
+
+**Island adventure map**
+![Map](docs/screenshots/map.png)
+
+**On phones: Mirror Hunt, Real or Alien? (Hindi), Echo Memory, Dot Flash (Hindi)**
+![Mobile](docs/screenshots/mobile.png)
+
+**Report: clear likelihood and when to see a professional**
+![Report](docs/screenshots/report.png)
+![Conditions](docs/screenshots/conditions.png)
+
+**Report: skill profile compared with age expectations**
+![Skills](docs/screenshots/skills.png)
+
+**Report: exact mistake patterns**
+![Mistakes](docs/screenshots/mistakes.png)
+
+**Action plan with practice games, and what to do if diagnosed**
+| | |
+|---|---|
+| ![Action plan](docs/screenshots/action-plan.png) | ![Next steps](docs/screenshots/next-steps.png) |
 
 ## 🧪 Limitations and validation roadmap
 
