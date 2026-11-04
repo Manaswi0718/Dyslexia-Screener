@@ -1,6 +1,6 @@
 # Word Wizards
 
-A game-based screener for dyslexia, dyscalculia and attention problems in children, in English, Hindi and Telugu.
+A game-based screener for dyslexia, dyscalculia and attention problems in children, in English, Hindi, Telugu, Tamil and Kannada.
 
 Neural Storm 2026 · Track: Human Impact · Problem statement **HI-03** (Adaptive Learning for Students with Disabilities)
 
@@ -13,17 +13,17 @@ This is a screening tool. It can't diagnose anything, and we haven't tested it w
 
 | | |
 |---|---|
-| Team name | Terminal Breakers |
-| Members | Manaswi C | Reenu P | Harshita V K |
-| College | Nitte Meenakshi Institute of Technology |
+| Team name | _your team name_ |
+| Members | _name (role)_ |
+| College | _your college_ |
 
 ## Why we built this
 
 Somewhere around 5 to 15% of children have dyslexia. In India it usually gets noticed late, after a child has been struggling at school for years. We looked at the screening tools that exist and kept running into the same few problems:
 
-- Most of them are in English. DALI, the screener developed at NBRC, covers Hindi, Marathi, Kannada and English, but there is nothing validated for Telugu.
+- Most of them are in English. DALI, the screener developed at NBRC, covers Hindi, Marathi, Kannada and English, but there is nothing validated for Telugu or Tamil.
 - Many need a trained adult to run them, a paid school licence, or special hardware (Lexplore, for example, uses eye-tracking).
-- Hindi and Telugu are spelled almost exactly the way they sound. Children with dyslexia in these languages often read correctly but slowly, so a test that only counts mistakes can miss them.
+- Hindi, Telugu, Tamil and Kannada are spelled almost exactly the way they sound. Children with dyslexia in these languages often read correctly but slowly, so a test that only counts mistakes can miss them.
 - Dyslexia, dyscalculia and ADHD often come together. A child with one is 2 to 3 times more likely to have another, but most tools check for one thing.
 - Parents get a score and no idea what to do with it.
 
@@ -37,7 +37,7 @@ Then the child plays up to 10 one-minute games on an island map. Errol the owl r
 
 | Game | What it checks |
 |---|---|
-| Mirror Hunt | telling apart look-alike letters (b/d, ब/व, ప/వ) |
+| Mirror Hunt | telling apart look-alike letters (b/d, ब/व, ప/వ, ன/ண) |
 | Rhyme Rocket | hearing whether two words rhyme (no reading needed) |
 | Sound Detective | matching a spoken sound to its letter |
 | Real or Alien? | reading made-up words |
@@ -67,7 +67,7 @@ For dyslexia:
 index = 0.7 × skill score + 0.3 × ML model score + questionnaire points (max 15)
 ```
 
-The skill score compares the child's accuracy in each reading game with what we expect at that age, measured from chance level. Slow answers add to the score on top of mistakes, with more weight for Hindi and Telugu. A child answering at random always ends up high, and a child who is accurate but very slow in Telugu still gets flagged.
+The skill score compares the child's accuracy in each reading game with what we expect at that age, measured from chance level. Slow answers add to the score on top of mistakes, with more weight for the four Indian languages. A child answering at random always ends up high, and a child who is accurate but very slow in Telugu or Tamil still gets flagged.
 
 The ML model is an XGBoost classifier on summary features (accuracy, miss rate, hits, clicks, age). The report shows the three features that pushed its estimate up or down, using SHAP values.
 
@@ -99,7 +99,7 @@ To reproduce: `python ml/train.py data/Dyt-desktop.csv`. Results are written to 
 | Scoring | `app/scoring.py` (Python) |
 | Backend | FastAPI and Uvicorn |
 | Frontend | HTML, CSS and JavaScript, no framework. Sound effects use the Web Audio API; the map, gauges and charts are SVG. |
-| Speech | Microsoft Edge neural voices through the `edge-tts` package (Neerja for English, Swara for Hindi, Shruti for Telugu), saved as mp3 files. gTTS and the browser's own voice are fallbacks. |
+| Speech | Microsoft Edge neural voices through the `edge-tts` package (Neerja for English, Swara for Hindi, Shruti for Telugu, Pallavi for Tamil, Sapna for Kannada), saved as mp3 files. gTTS and the browser's own voice are fallbacks. |
 | PDF report | html2pdf.js, bundled with the app |
 | Hosting | Docker on Render (free plan) |
 
@@ -136,7 +136,7 @@ app/scoring.py         skill scores, the likelihood index, report text
 ml/train.py            trains and evaluates the two models
 models/                trained model, metrics.json, shap_summary.png
 static/index.html      the whole front end (landing, setup, map, games, report)
-static/content.json    all words and instructions in English, Hindi and Telugu
+static/content.json    all words and instructions in the five languages
 static/audio/          pre-generated speech
 tools/                 scripts for audio and content
 Dockerfile             used for deployment
@@ -173,7 +173,7 @@ Action plan, and what to do after a diagnosis
 
 ## Limitations and what's needed next
 
-- We have not tested this with Indian children. The model was trained on Spanish-speaking participants doing different exercises, so we don't know yet how accurate the full app is in Hindi, Telugu or English.
+- We have not tested this with Indian children. The model was trained on Spanish-speaking participants doing different exercises, so we don't know yet how accurate the full app is in any of the five languages. The Tamil and Kannada content is the newest and has had the least checking.
 - The age expectations are our own estimates based on how hard each task is. They are not measured norms.
 - The attention game can't diagnose ADHD. It only flags signs worth mentioning to a doctor.
 
@@ -198,4 +198,4 @@ We read, ran and tested all the AI-generated code ourselves.
 - DALI (Dyslexia Assessment for Languages of India), National Brain Research Centre.
 - van Bergen, E. et al. (2025). Co-occurrence and causality among ADHD, dyslexia, and dyscalculia. Psychological Science.
 - Rights of Persons with Disabilities Act, 2016.
-- html2pdf.js (MIT licence). Fonts: Lexend, Noto Sans Devanagari and Noto Sans Telugu (Google Fonts, OFL).
+- html2pdf.js (MIT licence). Fonts: Lexend and Noto Sans (Devanagari, Telugu, Tamil, Kannada) from Google Fonts, OFL.

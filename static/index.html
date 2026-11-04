@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Word Wizards · Learning-difference screener</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#1D2645;--muted:#5D6785;--card:#fff;--line:#E7E2F3;
   --teal:#0E9384;--teal-d:#0B7468;--teal-s:#D5F3EE;--sun:#FFB020;--orange:#F07A3A;--red:#E04F5F;
   --green:#2FA866;--purple:#7B61D9;--blue:#3D8BFD;--pink:#F46FA6;
   --r:22px;--shadow:0 10px 30px rgba(40,50,110,.12),0 2px 6px rgba(40,50,110,.06);
-  --font:"Lexend","Noto Sans Devanagari","Noto Sans Telugu",Verdana,sans-serif;
+  --font:"Lexend","Noto Sans Devanagari","Noto Sans Telugu","Noto Sans Tamil","Noto Sans Kannada",Verdana,sans-serif;
 }
 *{box-sizing:border-box}
 body{caret-color:transparent;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;cursor:default}
@@ -81,6 +81,7 @@ input[type=number],input[type=text]{font:inherit;padding:10px 14px;border-radius
 .chip{padding:12px 16px;border-radius:16px;border:2px solid var(--line);background:#fff;font-weight:600;display:flex;gap:10px;align-items:center;text-align:left}
 .chip[aria-pressed=true]{border-color:var(--teal);background:var(--teal-s)}
 .chip .em{font-size:1.6rem}
+.chip[data-lang]{padding:9px 13px}
 .q{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:.92rem}
 /* ---------- owl ---------- */
 .owl-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:clamp(8px,1.6vh,16px)}
@@ -289,7 +290,7 @@ function say(text) {
 function voice(text, done) {
   if (!("speechSynthesis" in window)) return done();
   const u = new SpeechSynthesisUtterance(text.replace(/[\u{1F000}-\u{1FAFF}☀-➿️]/gu, ""));
-  u.lang = { en: "en-IN", hi: "hi-IN", te: "te-IN" }[S.lang]; u.rate = .85; u.onend = done; u.onerror = done; speechSynthesis.speak(u);
+  u.lang = { en: "en-IN", hi: "hi-IN", te: "te-IN", ta: "ta-IN", kn: "kn-IN" }[S.lang] || "en-IN"; u.rate = .85; u.onend = done; u.onerror = done; speechSynthesis.speak(u);
 }
 
 /* ------------------------- rewards ------------------------- */
@@ -577,7 +578,7 @@ function landing() {
   render(`<div class="card">
     <div class="hero">
       <div>
-        <span class="pill small" style="box-shadow:none;background:var(--teal-s)">🇮🇳 English · हिन्दी · తెలుగు</span>
+        <span class="pill small" style="box-shadow:none;background:var(--teal-s)">🇮🇳 English · हिन्दी · తెలుగు · தமிழ் · ಕನ್ನಡ</span>
         <h1 style="margin-top:12px">Catch reading and number difficulties early.</h1>
         <p class="lead">Word Wizards is 10 short games that a child plays with Errol the owl. While the child plays, the app looks for early signs of dyslexia, dyscalculia and attention problems. At the end, the parent or teacher gets a report that says what to do next. It is meant for children aged 5 to 14.</p>
         <div class="row" style="margin-top:18px"><button class="btn sun" id="start">🚀 Get started</button></div>
@@ -599,8 +600,8 @@ function landing() {
     <div class="skillchips">${GAMES.map(g => `<span>${g.icon} ${({visual:"Look-alike letters",phonology:"Rhyme & sounds",lettersound:"Letter sounds",decoding:"Reading new words",memory:"Sequence memory",naming:"Naming speed",spelling:"Spelling",numsense:"Number sense",numcompare:"Comparing numbers",attention:"Attention & impulse control"})[g.skill]}</span>`).join("")}</div>
     <h3>A few things to know</h3>
     <div class="feat">
-      <div><span class="e">🗣️</span><b>Hindi and Telugu</b>We picked letters and words that Indian children often mix up, like ब and व or ప and వ, and the vowel signs.</div>
-      <div><span class="e">⏱️</span><b>Speed counts</b>Hindi and Telugu are spelled the way they sound, so a child with dyslexia may read correctly but slowly. Every answer is timed.</div>
+      <div><span class="e">🗣️</span><b>Five languages</b>English, Hindi, Telugu, Tamil and Kannada. We picked letters that children often mix up in each script, like ब and व, ప and వ, or ன and ண, and the vowel signs.</div>
+      <div><span class="e">⏱️</span><b>Speed counts</b>Indian languages are spelled the way they sound, so a child with dyslexia may read correctly but slowly. Every answer is timed.</div>
       <div><span class="e">🧩</span><b>Reading, numbers, attention</b>These difficulties often show up together, so the app checks for each of them.</div>
       <div><span class="e">🔍</span><b>See the mistakes</b>The report lists what the child got wrong, for example choosing ब when the answer was व.</div>
       <div><span class="e">🧭</span><b>What to do next</b>When to see a doctor and who to see, what to practise at home, and the school support a child can get under the RPwD Act.</div>

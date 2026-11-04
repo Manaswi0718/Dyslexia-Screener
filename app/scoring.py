@@ -33,8 +33,8 @@ SKILLS = {
     "numcompare":  dict(module="numbers", label="Comparing numbers", floor=0.50, acc6=0.80, acc10=0.95, rt6=1800, rt10=1000, w=1.0),
 }
 
-# In regular scripts (Hindi, Telugu) dyslexia shows more as SLOW reading than as wrong answers.
-SPEED_WEIGHT = {"en": 0.25, "hi": 0.40, "te": 0.40}
+# In regular scripts (Hindi, Telugu, Tamil, Kannada) dyslexia shows more as SLOW reading than as wrong answers.
+SPEED_WEIGHT = {"en": 0.25, "hi": 0.40, "te": 0.40, "ta": 0.40, "kn": 0.40}
 
 BANDS = [  # (upper bound, key, label)
     (25, "unlikely", "Unlikely"),
@@ -249,8 +249,8 @@ def build_report(session: dict, model_prob: float | None, model_threshold: float
     notes = []
     if "attention" in conditions and conditions["attention"]["band"] in ("likely", "very_likely") and "dyslexia" in conditions:
         notes.append("Attention difficulties during the games can lower scores in other games too. Keep this in mind when reading the other results.")
-    if lang in ("hi", "te"):
-        notes.append("Hindi and Telugu are written almost exactly as they sound, so this screener gives extra weight to speed: slow-but-correct reading can be a sign of dyslexia in these languages.")
+    if lang in ("hi", "te", "ta", "kn"):
+        notes.append("Hindi, Telugu, Tamil and Kannada are written almost exactly as they sound, so this screener gives extra weight to speed: slow-but-correct reading can be a sign of dyslexia in these languages.")
 
     weak = sorted([(k, v) for k, v in skills.items() if v["concern"] >= 25], key=lambda kv: -kv[1]["concern"])[:3]
     plan = [{"skill": k, "label": v["label"], "activities": ACTIVITIES[k]} for k, v in weak]

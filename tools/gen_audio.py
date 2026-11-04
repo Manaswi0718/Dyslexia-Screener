@@ -1,7 +1,7 @@
 """
 Pre-generate spoken audio for every word AND every instruction the games use.
 Uses natural-sounding NEURAL Indian voices (Microsoft Edge TTS):
-    English  en-IN-NeerjaNeural · Hindi  hi-IN-SwaraNeural · Telugu  te-IN-ShrutiNeural
+    English en-IN-NeerjaNeural · Hindi hi-IN-SwaraNeural · Telugu te-IN-ShrutiNeural · Tamil ta-IN-PallaviNeural · Kannada kn-IN-SapnaNeural
 Falls back to gTTS if a neural voice fails. Needs internet once; then the app works offline.
 
 Run:            python tools/gen_audio.py
@@ -15,7 +15,8 @@ ROOT = Path(__file__).resolve().parent.parent
 content = json.load(open(ROOT / "static" / "content.json", encoding="utf-8"))
 out_root = ROOT / "static" / "audio"
 
-VOICES = {"en": "en-IN-NeerjaNeural", "hi": "hi-IN-SwaraNeural", "te": "te-IN-ShrutiNeural"}
+VOICES = {"en": "en-IN-NeerjaNeural", "hi": "hi-IN-SwaraNeural", "te": "te-IN-ShrutiNeural",
+          "ta": "ta-IN-PallaviNeural", "kn": "kn-IN-SapnaNeural"}
 for i, a in enumerate(sys.argv):
     if a == "--voice" and i + 1 < len(sys.argv):
         k, v = sys.argv[i + 1].split("=", 1); VOICES[k] = v
