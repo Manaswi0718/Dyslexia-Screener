@@ -20,7 +20,7 @@ This is a screening tool. It can't diagnose anything, and we haven't tested it w
 | | |
 |---|---|
 | Team name | Terminal Breakers |
-| Members | Manaswi C | Reenu P | Harshita V K |
+| Members | Manaswi C, Reenu P, Harshita V K |
 | College | Nitte Meenakshi Institute of Technology |
 
 ## Why we built this
