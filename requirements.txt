@@ -1,9 +1,6 @@
-pandas
-scikit-learn
-xgboost
-shap
+# Everything for local development (training, audio generation, running the app)
+-r requirements-server.txt
 matplotlib
-joblib
-fastapi
-uvicorn
+shap==0.51.0
 gTTS
+edge-tts

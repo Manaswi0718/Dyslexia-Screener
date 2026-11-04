@@ -21,11 +21,12 @@ ROOT = Path(__file__).resolve().parent.parent
 bundle = joblib.load(ROOT / "models" / "portable_model.joblib")
 MODEL, FEATURES, THRESHOLD = bundle["model"], bundle["features"], bundle["threshold"]
 
+# SHAP explanations come straight from XGBoost (pred_contribs) - no heavy 'shap' library needed on the server
 try:
-    import shap
-    EXPLAINER = shap.TreeExplainer(MODEL)
+    import xgboost as xgb
+    BOOSTER = MODEL.get_booster()
 except Exception:
-    EXPLAINER = None
+    BOOSTER = None
 
 FEATURE_TEXT = {
     "age": "age", "acc_mean": "overall accuracy", "acc_std": "how uneven accuracy was across games",
@@ -82,12 +83,9 @@ def report(s: Session):
         X.insert(0, "age", s.age)
         X = X[FEATURES]
         prob = float(MODEL.predict_proba(X)[0, 1])
-        if EXPLAINER is not None:
-            sv = EXPLAINER.shap_values(X)
-            if isinstance(sv, list): sv = sv[1]
-            sv = np.asarray(sv)
-            if sv.ndim == 3: sv = sv[:, :, 1]
-            top = sorted(zip(FEATURES, sv[0]), key=lambda t: -abs(t[1]))[:3]
+        if BOOSTER is not None:
+            contrib = BOOSTER.predict(xgb.DMatrix(X), pred_contribs=True)[0][:-1]   # last column = bias
+            top = sorted(zip(FEATURES, contrib), key=lambda t: -abs(t[1]))[:3]
             reasons = [{"text": FEATURE_TEXT.get(f, f), "direction": "raised" if v > 0 else "lowered"} for f, v in top]
     session = s.model_dump()
     return build_report(session, prob, THRESHOLD, reasons)

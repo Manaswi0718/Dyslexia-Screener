@@ -1,0 +1,9 @@
+# What the deployed app needs to run. Versions match the ones the model was trained with
+# (a model saved with one xgboost/scikit-learn version may not load in another).
+numpy==2.4.6
+pandas==3.1.0
+scikit-learn==1.9.1
+xgboost==3.2.0
+joblib==1.6.0
+fastapi
+uvicorn
