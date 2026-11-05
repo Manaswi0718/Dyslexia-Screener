@@ -11,7 +11,7 @@ A game-based screener for dyslexia, dyscalculia and attention problems in childr
 Neural Storm 2026 · Track: Human Impact · Problem statement **HI-03** (Adaptive Learning for Students with Disabilities)
 
 - Live demo: https://word-wizards-uix0.onrender.com (it runs on Render's free plan, so the first visit can take about a minute to load)
-- Demo video: https://drive.google.com/file/d/1XJhTaycIsEsHEc99ZFh40TEQWG1qhQKn/view?usp=drivesdk
+- Demo video: _add the Drive link here_
 
 This is a screening tool. It can't diagnose anything, and we haven't tested it with Indian children yet (more on that under Limitations).
 
@@ -19,9 +19,9 @@ This is a screening tool. It can't diagnose anything, and we haven't tested it w
 
 | | |
 |---|---|
-| Team name | Terminal Breakers |
-| Members | Manaswi C, Reenu P, Harshita V K |
-| College | Nitte Meenakshi Institute of Technology |
+| Team name | _your team name_ |
+| Members | _name (role)_ |
+| College | _your college_ |
 
 ## Why we built this
 
@@ -39,7 +39,7 @@ For HI-03 we narrowed the problem to this: early screening, through games, for c
 
 A parent or teacher fills in a short setup page: the child's age and class, the language, which checks to run, and six yes/no questions about known risk factors (family history of reading trouble, late speech, and so on).
 
-Then the child plays up to 10 one-minute games on an island map. Errol the owl reads out every instruction, so a child who can't read yet can still play.
+Then the child plays up to 10 one-minute games on an island map. Errol the owl reads out every instruction, so a child who can't read yet can still play. The child picks Errol's colour at the start, and the coins they earn in the games and in practice buy hats for him. That gives children a reason to come back, and it never affects any score.
 
 | Game | What it checks |
 |---|---|
@@ -254,7 +254,8 @@ Before anyone could use this professionally, it would need a pilot with a few hu
 
 ## AI tools used
 
-- Claude (Anthropic): planning, research on existing screeners and the evidence behind each game, help writing and debugging code.
+- Claude (Anthropic): planning, research on existing screeners and the evidence behind each game, help writing and debugging code, and drafting this README.
+- _Add any other tools you used._
 
 We read, ran and tested all the AI-generated code ourselves.
 

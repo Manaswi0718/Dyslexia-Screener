@@ -185,6 +185,17 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{co
 .tabs button{padding:8px 16px;border-radius:999px;background:#F2F0FA;font-weight:700;font-size:.9rem;color:var(--muted)}
 .tabs button[aria-selected=true]{background:var(--ink);color:#fff}
 .disclaimer{font-size:.8rem;color:var(--muted);margin-top:18px}
+/* Errol's wardrobe */
+.owlwrap{position:relative;display:inline-block;line-height:1}
+.owlwrap .hat{position:absolute;left:50%;top:-.34em;transform:translateX(-50%) rotate(-10deg);font-size:.58em;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
+.swatches{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:.85rem}
+.swatch{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.swatch[aria-pressed=true]{box-shadow:0 0 0 3px var(--ink)}
+.shop{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px}
+.shop button{background:#fff;border:3px solid var(--line);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;font-size:.85rem}
+.shop button .e{font-size:2.4rem}
+.shop button.own{border-color:var(--teal)}.shop button.wear{border-color:var(--sun);background:#FFF8E6}
+.shop button[disabled]{opacity:.45}
 /* adaptive practice */
 .lvl{display:inline-flex;gap:6px;align-items:center;background:#FFF4D6;border:2px solid #F6D27A;border-radius:999px;padding:3px 12px;font-weight:800;font-size:.85rem;color:#7A5200}
 .lvl span{color:var(--sun);letter-spacing:1px}
@@ -679,7 +690,7 @@ function setup() {
   $("go").onclick = () => {
     read();
     if (!$("consent").checked) { $("consent").parentElement.classList.add("bad"); $("consent").focus(); return; }
-    S.rounds = []; S.done = new Set(); S.coins = 0; $("coinN").textContent = 0; S.practice = false;
+    S.rounds = []; S.done = new Set(); S.coins = 0; S.banked = false; $("coinN").textContent = 0; S.practice = false;
     SFX.whoosh(); map(true);
   };
   if ($("hist")) $("hist").onclick = history;
@@ -693,7 +704,7 @@ function map(first = false) {
   const games = activeGames(), next = games.find(g => !S.done.has(g.id));
   const u = UI();
   const msg = first ? u.owlHello : next ? owlLine(u) : u.owlDone;
-  render(`<div class="owl-row"><button class="owl" id="owl" aria-label="Hear again">🦉</button><div class="bubble">${msg}${next && !first ? `<div class="small muted" style="margin-top:4px">${u.nextLabel || "Next island:"} <b>${next.icon} ${next.title(u)}</b></div>` : ""}</div></div>
+  render(`<div class="owl-row"><button class="owl" id="owl" aria-label="Hear again">${owlFace()}</button><div class="bubble">${msg}${first ? swatchRow() : ""}${next && !first ? `<div class="small muted" style="margin-top:4px">${u.nextLabel || "Next island:"} <b>${next.icon} ${next.title(u)}</b></div>` : ""}</div></div>
     <div class="map" id="mapbox">
       <div class="waves" aria-hidden="true">${[12, 30, 50, 70, 88].map((top, i) => `<svg viewBox="0 0 1200 46" preserveAspectRatio="none" style="top:${top}%;animation-duration:${14 + i * 5}s;opacity:${.5 + (i % 2) * .4}"><path d="${"M0 23 " + Array.from({ length: 12 }, (_, k) => `Q ${k * 100 + 25} ${k % 2 ? 36 : 10} ${k * 100 + 50} 23 T ${k * 100 + 100} 23`).join(" ")}"/></svg>`).join("")}
         ${Array.from({ length: 12 }, () => `<span class="sparkle" style="left:${Math.random() * 96}%;top:${Math.random() * 92}%;animation-delay:${-Math.random() * 3}s">✦</span>`).join("")}
@@ -709,6 +720,7 @@ function map(first = false) {
            : `<p class="center" style="margin-top:18px"><button class="btn" id="fin">🏆 ${u.done}</button></p>`}
     <p class="center progress maponly">${S.done.size} / ${games.length} ⭐</p>`);
   say(msg); $("owl").onclick = () => say(msg);
+  if (first) wireSwatches(() => { $("owl").innerHTML = owlFace(); });
   drawPath(); window.onresize = drawPath;
   document.fonts?.ready.then(drawPath); setTimeout(drawPath, 400);
   if (window.ResizeObserver) new ResizeObserver(drawPath).observe($("mapbox"));
@@ -767,14 +779,16 @@ async function playGame(g) {
 }
 
 async function finale() {
-  SFX.fanfare(); confetti(60);
+  bankCoins(); SFX.fanfare(); confetti(60);
   render(`<div class="card center"><div style="font-size:6rem;animation:bob 1.4s infinite">🏆</div>
-    <h1>${UI().owlDone}</h1><p class="pill" style="font-size:1.3rem">🪙 ${S.coins}</p>
+    <h1>${UI().owlDone}</h1><p class="pill" style="font-size:1.3rem">🪙 +${S.coins} &nbsp;·&nbsp; total ${wallet().coins}</p>
+    <p><button class="btn sun" id="ward">🎩 Dress up Errol</button></p>
     <p class="muted" style="margin-top:18px">Please hand the device back to the grown-up.</p>
     <button class="btn" id="rep">📋 Show the report</button></div>`);
   say(UI().owlDone);
+  $("ward").onclick = () => wardrobe(finale);
   $("rep").onclick = async () => {
-    render(`<div class="card center"><div class="owl" style="font-size:4rem">🦉</div><p>Preparing the report…</p></div>`);
+    render(`<div class="card center"><div class="owl" style="font-size:4rem">${owlFace()}</div><p>Preparing the report…</p></div>`);
     try {
       const r = await fetch("/api/report", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: S.name, age: S.age, grade: S.grade, language: S.lang, questionnaire: S.q, rounds: S.rounds }) });
@@ -1178,7 +1192,7 @@ async function practiceHome(key) {
   let plan; try { plan = await api("/api/practice/plan", { learner: P.learner }); } catch (e) { render(`<div class="card"><p>Could not reach the server: ${e}</p></div>`); return; }
   const u = UI(), acts = plan.activities, f = P.learner.format || {};
   const sessions = (P.learner.sessions || []).length;
-  render(`<div class="owl-row"><button class="owl" id="owl">🦉</button><div class="bubble">${sessions ? "Welcome back" : "Hi"} ${P.learner.name}! Here's today's practice. It gets harder when you're doing well and easier when it's tricky.</div></div>
+  render(`<div class="owl-row"><button class="owl" id="owl">${owlFace()}</button><div class="bubble">${sessions ? "Welcome back" : "Hi"} ${P.learner.name}! Here's today's practice. It gets harder when you're doing well and easier when it's tricky.</div></div>
     <div class="card">
       <h2>🎯 Today's practice <span class="small muted">(about ${Math.round(acts.length * plan.round_size * 0.15 + 1)} minutes)</span></h2>
       <div class="plan" style="margin-top:12px">${acts.map(a => { const g = GAMES.find(x => x.id === a.game); return `<div class="p">
@@ -1188,14 +1202,15 @@ async function practiceHome(key) {
         <div class="small muted">Mastery ${Math.round(a.mastery * 100)}%${a.focus.length ? ` · extra practice on ${a.focus.map(p => p[0]).join(", ")}` : ""}</div></div>`; }).join("")}</div>
       <h3>⚙️ Settings for ${P.learner.name}</h3>
       <ul class="small">${(f.reasons || []).map(r => `<li>${r}</li>`).join("")}</ul>
-      <div class="row" style="margin-top:14px"><button class="btn sun" id="go">▶ Start practice</button><button class="ghost" id="prog">📈 Progress</button><button class="ghost" id="home">🏠 Home</button></div>
+      <div class="row" style="margin-top:14px"><button class="btn sun" id="go">▶ Start practice</button><button class="ghost" id="ward">🎩 Errol's wardrobe (🪙 ${wallet().coins})</button><button class="ghost" id="prog">📈 Progress</button><button class="ghost" id="home">🏠 Home</button></div>
     </div>`);
   $("owl").onclick = () => {}; $("go").onclick = () => runPractice(acts, plan.round_size);
+  $("ward").onclick = () => wardrobe(() => practiceHome());
   $("prog").onclick = () => progressPage(); $("home").onclick = landing;
 }
 
 async function runPractice(acts, n) {
-  applyFormat(P.learner.format); S.practice = true; $("coins").hidden = false; S.coins = 0; $("coinN").textContent = 0;
+  applyFormat(P.learner.format); S.practice = true; $("coins").hidden = false; S.coins = 0; S.banked = false; $("coinN").textContent = 0;
   const results = [], t0 = Date.now(), u = UI();
   for (const act of acts) {
     const g = GAMES.find(x => x.id === act.game);
@@ -1214,6 +1229,7 @@ async function runPractice(acts, n) {
   const before = { ...P.learner.mastery };
   try { P.learner = { ...(await api("/api/practice/update", { learner: P.learner, results })), name: P.learner.name, lang: P.learner.lang, age: P.learner.age }; saveLearner(); }
   catch (e) { render(`<div class="card"><p>Could not save practice: ${e}</p></div>`); return; }
+  bankCoins();
   if (!calm()) { SFX.fanfare(); confetti(30); }
   const last = P.learner.sessions[P.learner.sessions.length - 1];
   render(`<div class="card practice">
@@ -1224,8 +1240,9 @@ async function runPractice(acts, n) {
       <div class="small muted" style="margin-top:6px">Mastery ${Math.round((s.before || 0) * 100)}% → <b>${Math.round(s.after * 100)}%</b></div>
       <div class="bar" style="margin-top:4px"><div style="width:${Math.round(s.after * 100)}%;background:${s.after >= .9 ? "var(--green)" : "var(--teal)"}"></div></div></div>`; }).join("")}</div>
     <p class="small muted" style="margin-top:12px">Levels go up after 3 right answers in a row and down after a mistake, so practice stays "just hard enough". Mastery is estimated with Bayesian Knowledge Tracing.</p>
-    <div class="row"><button class="btn" id="nextPractice">🎯 Next practice</button><button class="ghost" id="prog">📈 Progress</button><button class="ghost" id="home">🏠 Home</button></div></div>`);
+    <div class="row"><button class="btn" id="nextPractice">🎯 Next practice</button><button class="btn sun" id="ward">🎩 Dress up Errol (🪙 ${wallet().coins})</button><button class="ghost" id="prog">📈 Progress</button><button class="ghost" id="home">🏠 Home</button></div></div>`);
   $("nextPractice").onclick = () => practiceHome(); $("prog").onclick = progressPage; $("home").onclick = landing;
+  $("ward").onclick = () => wardrobe(() => practiceHome());
 }
 
 function progressPage() {
@@ -1272,6 +1289,55 @@ function practiceSingle(gameId) {
   const g = GAMES.find(x => x.id === gameId), conf = Object.entries(P.learner.confusions || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k.split("|"));
   runPractice([{ game: gameId, skill: g.skill, level: (P.learner.levels || {})[gameId] || 1, mastery: (P.learner.mastery || {})[g.skill] || .3,
                  focus: ["mirror", "letters", "spell"].includes(gameId) ? conf : [] }], (P.learner.format || {}).round_size || 8);
+}
+
+
+/* ---------- Errol's wardrobe: coins buy hats; colour is a free choice. Purely cosmetic: never affects scores. ---------- */
+const HUES = [0, 150, 205, 270, 320];
+const HATS = [["🧢", 20], ["🎀", 30], ["🌸", 40], ["🎩", 50], ["👒", 70], ["🎓", 90], ["👑", 120]];
+const wkey = () => learnerKey(S.name);
+function wallet() { return { coins: 0, hat: "", hue: 0, owned: [], ...(store.get("ww_wallet", {})[wkey()] || {}) }; }
+function saveWallet(w) { const all = store.get("ww_wallet", {}); all[wkey()] = w; store.set("ww_wallet", all); }
+function bankCoins() { if (S.banked || !S.coins) return; const w = wallet(); w.coins += S.coins; saveWallet(w); S.banked = true; }
+function owlFace(w = wallet()) {
+  return `<span class="owlwrap"><span style="display:inline-block;filter:hue-rotate(${w.hue}deg)">🦉</span>${w.hat ? `<span class="hat">${w.hat}</span>` : ""}</span>`;
+}
+function swatchRow() {
+  const w = wallet();
+  return `<div class="swatches"><span class="muted">Pick Errol's colour:</span>${HUES.map(h => `<button class="swatch" data-hue="${h}" aria-label="colour" aria-pressed="${w.hue === h}"
+    style="background:radial-gradient(circle at 40% 35%,#fff7,transparent 60%),#9B6B43;filter:hue-rotate(${h}deg)"></button>`).join("")}</div>`;
+}
+function wireSwatches(onChange) {
+  app.querySelectorAll("[data-hue]").forEach(b => b.onclick = () => {
+    const w = wallet(); w.hue = +b.dataset.hue; saveWallet(w);
+    app.querySelectorAll("[data-hue]").forEach(x => x.setAttribute("aria-pressed", x === b)); SFX.good(); onChange && onChange();
+  });
+}
+function wardrobe(back) {
+  const draw = () => {
+    const w = wallet();
+    render(`<div class="card center">
+      <h2>🎩 Errol's wardrobe</h2>
+      <div style="font-size:6rem;margin:26px 0 6px">${owlFace(w)}</div>
+      <p class="pill" style="font-size:1.2rem">🪙 ${w.coins}</p>
+      <p class="muted small">Earn coins in the games and practice, then pick something for Errol.</p>
+      <div class="shop" style="margin-top:12px">
+        <button data-hat="" class="${!w.hat ? "wear" : "own"}"><span class="e">🚫</span>No hat</button>
+        ${HATS.map(([e, price]) => { const own = w.owned.includes(e), wearing = w.hat === e;
+          return `<button data-hat="${e}" data-price="${price}" class="${wearing ? "wear" : own ? "own" : ""}" ${!own && w.coins < price ? "disabled" : ""}>
+            <span class="e">${e}</span>${wearing ? "Wearing" : own ? "Wear" : `🪙 ${price}`}</button>`; }).join("")}
+      </div>
+      <div class="center" style="margin-top:6px">${swatchRow()}</div>
+      <p style="margin-top:18px"><button class="btn" id="wback">← Back</button></p></div>`);
+    app.querySelectorAll("[data-hat]").forEach(b => b.onclick = () => {
+      const w = wallet(), e = b.dataset.hat, price = +b.dataset.price || 0;
+      if (e && !w.owned.includes(e)) { if (w.coins < price) return; w.coins -= price; w.owned.push(e); SFX.coin(); if (!calm()) confetti(14); }
+      else SFX.good();
+      w.hat = e; saveWallet(w); draw();
+    });
+    wireSwatches(draw); $("wback").onclick = back;
+  };
+  applyFormat(null); draw();
 }
 
 /* ------------------------- boot ------------------------- */
