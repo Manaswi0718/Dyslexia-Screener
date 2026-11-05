@@ -254,8 +254,7 @@ Before anyone could use this professionally, it would need a pilot with a few hu
 
 ## AI tools used
 
-- Claude (Anthropic): planning, research on existing screeners and the evidence behind each game, help writing and debugging code, and drafting this README.
-- _Add any other tools you used._
+- Claude (Anthropic): planning, research on existing screeners and the evidence behind each game, help writing and debugging code.
 
 We read, ran and tested all the AI-generated code ourselves.
 
