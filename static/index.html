@@ -390,7 +390,7 @@ async function rhymeGame() {
 async function rhymeRound(pairs, n) {
   const u = UI(), R = newRound("rhyme", "phonology");
   for (const [i, p] of pairs.entries()) {
-    gameCard(`<div class="speaker" aria-hidden="true">🔊</div><p class="center muted" id="st" style="min-height:1.6em;margin:4px 0 12px">👂 ${u.listen}</p>
+    gameCard(`<div class="speaker" aria-hidden="true">🔊</div><p class="center muted" id="st" style="min-height:1.6em;margin:4px 0 12px">${u.listen}</p>
       <div class="two"><button class="c-green ans" id="y" disabled>👍 ${u.yes}</button><button class="c-orange ans" id="n" disabled>👎 ${u.no}</button></div>
       <p class="center" style="margin-top:16px"><button class="ghost" id="again" disabled>🔁 ${u.replay}</button></p>`, `${u.rhymeTitle} · ${n}/2 · ${i + 1}/${pairs.length}`);
     const play = async () => { $("st").style.visibility = "visible"; ["y", "n", "again"].forEach(id => $(id).disabled = true); await say(p.a); await sleep(450); await say(p.b); ["y", "n", "again"].forEach(id => $(id).disabled = false); $("st").style.visibility = "hidden"; };
@@ -407,7 +407,7 @@ async function lettersGame() {
   const u = UI(), R = newRound("letters", "lettersound"), items = shuffle(C().letters || []).slice(0, 8);
   for (const [i, it] of items.entries()) {
     const opts = shuffle([it.letter, ...it.distractors.slice(0, 3)]);
-    gameCard(`<div class="speaker" aria-hidden="true">👂</div>
+    gameCard(`<div class="speaker" aria-hidden="true">🔊</div>
       <div class="letters">${opts.map((o, k) => `<button class="letter ans" id="l${k}" disabled>${o}</button>`).join("")}</div>
       <p class="center" style="margin-top:16px"><button class="ghost" id="again">🔁 ${u.replay}</button></p>`, `${u.letterTitle} · ${i + 1}/${items.length}`);
     const btns = opts.map((_, k) => $("l" + k));
@@ -1034,7 +1034,7 @@ const PRACTICE = {
       const focus = focusOf(act, i), it = pickWeighted(all, x => focus && x.letter === focus[0]);
       let ds = [...it.distractors]; if (focus && focus[0] === it.letter && !ds.includes(focus[1])) ds.unshift(focus[1]);
       const opts = shuffle([it.letter, ...ds.slice(0, [1, 2, 3, 3, 3][st.level - 1])]);
-      pcard(st, `${u.letterTitle} · ${i + 1}/${n}`, `<div class="speaker">👂</div>
+      pcard(st, `${u.letterTitle} · ${i + 1}/${n}`, `<div class="speaker">🔊</div>
         <div class="letters" style="grid-template-columns:repeat(${opts.length},1fr)">${opts.map((o, k) => `<button class="letter ans" id="l${k}" disabled>${o}</button>`).join("")}</div>
         <p class="center" style="margin-top:14px"><button class="ghost" id="again">🔁 ${u.replay}</button></p>`);
       const btns = opts.map((_, k) => $("l" + k));
@@ -1063,7 +1063,7 @@ const PRACTICE = {
     const u = UI();
     for (let i = 0; i < n; i++) {
       const p = pick(C().rhyme), gap = [900, 700, 500, 350, 250][st.level - 1], replay = st.level <= 3;
-      pcard(st, `${u.rhymeTitle} · ${i + 1}/${n}`, `<div class="speaker">🔊</div><p class="center muted" id="st" style="min-height:1.6em">👂 ${u.listen}</p>
+      pcard(st, `${u.rhymeTitle} · ${i + 1}/${n}`, `<div class="speaker">🔊</div><p class="center muted" id="st" style="min-height:1.6em">${u.listen}</p>
         <div class="two"><button class="c-green ans" id="y" disabled>👍 ${u.yes}</button><button class="c-orange ans" id="n" disabled>👎 ${u.no}</button></div>
         <p class="center" style="margin-top:14px">${replay ? `<button class="ghost" id="again" disabled>🔁 ${u.replay}</button>` : ""}</p>`);
       const play = async () => { $("st").style.visibility = "visible"; ["y", "n", "again"].forEach(id => $(id) && ($(id).disabled = true));
