@@ -5,7 +5,7 @@ Serves the games (static/) and turns game results into a full screening report.
 Run:  uvicorn app.main:app --reload     then open http://127.0.0.1:8000
 """
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import joblib
 import numpy as np
@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict
 
 from app.scoring import build_report
+from app.adaptive import init_learner, plan_session, update_learner
 
 ROOT = Path(__file__).resolve().parent.parent
 bundle = joblib.load(ROOT / "models" / "portable_model.joblib")
@@ -89,6 +90,39 @@ def report(s: Session):
             reasons = [{"text": FEATURE_TEXT.get(f, f), "direction": "raised" if v > 0 else "lowered"} for f, v in top]
     session = s.model_dump()
     return build_report(session, prob, THRESHOLD, reasons)
+
+
+# ---------------- adaptive practice ----------------
+class LearnerInit(BaseModel):
+    report: Dict[str, Any]
+    mistakes: List[Dict[str, Any]] = []
+
+
+class PlanRequest(BaseModel):
+    learner: Dict[str, Any]
+
+
+class UpdateRequest(BaseModel):
+    learner: Dict[str, Any]
+    results: List[Dict[str, Any]]
+
+
+@app.post("/api/learner/init")
+def learner_init(body: LearnerInit):
+    """Build a learner profile (mastery, levels, confusions, format) from a screening report."""
+    return init_learner(body.report, body.mistakes)
+
+
+@app.post("/api/practice/plan")
+def practice_plan(body: PlanRequest):
+    """Choose today's practice: weakest skills first, plus one easier skill to keep it encouraging."""
+    return plan_session(body.learner)
+
+
+@app.post("/api/practice/update")
+def practice_update(body: UpdateRequest):
+    """Update mastery (Bayesian Knowledge Tracing), levels and confusions after a practice session."""
+    return update_learner(body.learner, body.results)
 
 
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")

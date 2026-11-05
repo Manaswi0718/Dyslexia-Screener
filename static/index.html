@@ -185,6 +185,14 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{co
 .tabs button{padding:8px 16px;border-radius:999px;background:#F2F0FA;font-weight:700;font-size:.9rem;color:var(--muted)}
 .tabs button[aria-selected=true]{background:var(--ink);color:#fff}
 .disclaimer{font-size:.8rem;color:var(--muted);margin-top:18px}
+/* adaptive practice */
+.lvl{display:inline-flex;gap:6px;align-items:center;background:#FFF4D6;border:2px solid #F6D27A;border-radius:999px;padding:3px 12px;font-weight:800;font-size:.85rem;color:#7A5200}
+.lvl span{color:var(--sun);letter-spacing:1px}
+.lvlup{color:#fff!important;background:linear-gradient(90deg,var(--purple),var(--blue));padding:10px 18px;border-radius:999px;font-size:1.3rem!important;text-shadow:none!important;box-shadow:var(--shadow)}
+.fmt .practice .tile,.fmt .practice .letter,.fmt .practice .unit,.fmt .practice .num{font-size:calc(2.2rem * var(--fmt-scale,1));letter-spacing:var(--fmt-space,0)}
+.fmt .practice .word{font-size:calc(clamp(2.4rem,7vh,3.6rem) * var(--fmt-scale,1));letter-spacing:var(--fmt-space,0)}
+.fmt .practice .slot,.fmt .practice .target{font-size:calc(2.6rem * var(--fmt-scale,1));letter-spacing:var(--fmt-space,0)}
+.fmt .practice p,.fmt .practice h2{letter-spacing:calc(.015em + var(--fmt-space,0) / 3)}
 @media(max-width:640px){.maponly{display:none}#play,#fin{margin-top:-4px}.island .blob .badge{font-size:1rem}
   .topbar{padding:8px 12px}.brand svg{width:38px;height:38px}.brand .wm{font-size:1.1rem}
   .tiles{grid-template-columns:repeat(4,1fr);max-width:calc((100dvh - 290px) * .8)}.bubble{font-size:.9rem;padding:10px 14px}
@@ -281,16 +289,17 @@ function say(text) {
     if (currentAudio) { currentAudio.pause(); currentAudio = null; }
     speechSynthesis?.cancel?.();
     const src = (AUDIO[S.lang] || {})[text];
-    const guard = setTimeout(res, Math.min(9000, 1500 + text.length * 90));
+    const guard = setTimeout(res, Math.min(12000, (1500 + text.length * 90) / ((P.fmt && P.fmt.speech_rate) || 1)));
     const done = () => { clearTimeout(guard); res(); };
-    if (src) { const a = new Audio(src); currentAudio = a; a.onended = done; a.onerror = () => voice(text, done); a.play().catch(() => voice(text, done)); }
+    const rate = (P.fmt && P.fmt.speech_rate) || 1;
+    if (src) { const a = new Audio(src); a.playbackRate = rate; a.preservesPitch = true; currentAudio = a; a.onended = done; a.onerror = () => voice(text, done); a.play().catch(() => voice(text, done)); }
     else voice(text, done);
   });
 }
 function voice(text, done) {
   if (!("speechSynthesis" in window)) return done();
   const u = new SpeechSynthesisUtterance(text.replace(/[\u{1F000}-\u{1FAFF}☀-➿️]/gu, ""));
-  u.lang = { en: "en-IN", hi: "hi-IN", te: "te-IN", ta: "ta-IN", kn: "kn-IN" }[S.lang] || "en-IN"; u.rate = .85; u.onend = done; u.onerror = done; speechSynthesis.speak(u);
+  u.lang = { en: "en-IN", hi: "hi-IN", te: "te-IN", ta: "ta-IN", kn: "kn-IN" }[S.lang] || "en-IN"; u.rate = .85 * ((P.fmt && P.fmt.speech_rate) || 1); u.onend = done; u.onerror = done; speechSynthesis.speak(u);
 }
 
 /* ------------------------- rewards ------------------------- */
@@ -574,6 +583,7 @@ async function gonogoGame() {
    SCREENS
    ===================================================================== */
 function landing() {
+  applyFormat(null);
   $("coins").hidden = true;
   render(`<div class="card">
     <div class="hero">
@@ -581,7 +591,8 @@ function landing() {
         <span class="pill small" style="box-shadow:none;background:var(--teal-s)">🇮🇳 English · हिन्दी · తెలుగు · தமிழ் · ಕನ್ನಡ</span>
         <h1 style="margin-top:12px">Catch reading and number difficulties early.</h1>
         <p class="lead">Word Wizards is 10 short games that a child plays with Errol the owl. While the child plays, the app looks for early signs of dyslexia, dyscalculia and attention problems. At the end, the parent or teacher gets a report that says what to do next. It is meant for children aged 5 to 14.</p>
-        <div class="row" style="margin-top:18px"><button class="btn sun" id="start">🚀 Get started</button></div>
+        <div class="row" style="margin-top:18px"><button class="btn sun" id="start">🚀 Get started</button>
+          ${Object.entries(allLearners()).slice(0, 3).map(([k, l]) => `<button class="ghost" data-learner="${k}">🎯 Continue ${l.name}'s practice</button>`).join("")}</div>
         <p class="small muted" style="margin-top:12px">About 12 minutes · results stay on this device</p>
       </div>
       <div class="hero-art" aria-hidden="true"><div class="big">🦉</div>
@@ -611,6 +622,7 @@ function landing() {
   </div>`);
   $("start").onclick = $("start2").onclick = setup;
   app.querySelector(".hero-art").onclick = () => say(UI().owlHello);
+  app.querySelectorAll("[data-learner]").forEach(b => b.onclick = () => practiceHome(b.dataset.learner));
 }
 
 const QUESTIONS = [
@@ -623,6 +635,7 @@ const QUESTIONS = [
 ];
 
 function setup() {
+  applyFormat(null);
   $("coins").hidden = true; document.documentElement.lang = S.lang;
   const hist = store.get("ww_history", []);
   render(`<div class="card">
@@ -652,6 +665,7 @@ function setup() {
       </div>
     </div>
     <p class="center" style="margin-top:22px"><button class="btn sun" id="go">🏝️ Start the adventure</button></p>
+    ${Object.keys(allLearners()).length ? `<p class="center small" style="margin-top:14px">${Object.entries(allLearners()).slice(0, 6).map(([k, l]) => `<button class="ghost" data-learner="${k}" style="margin:3px">🎯 ${l.name}'s practice</button>`).join("")}</p>` : ""}
     ${hist.length ? `<p class="center small"><button class="ghost" id="hist">📈 Past results (${hist.length})</button></p>` : ""}
   </div>`);
   app.querySelectorAll("[data-lang]").forEach(b => b.onclick = () => { read(); S.lang = b.dataset.lang; setup(); });
@@ -669,10 +683,12 @@ function setup() {
     SFX.whoosh(); map(true);
   };
   if ($("hist")) $("hist").onclick = history;
+  app.querySelectorAll("[data-learner]").forEach(b => b.onclick = () => practiceHome(b.dataset.learner));
 }
 
 /* ---------- island map ---------- */
 function map(first = false) {
+  applyFormat(null);
   $("coins").hidden = false;
   const games = activeGames(), next = games.find(g => !S.done.has(g.id));
   const u = UI();
@@ -764,6 +780,7 @@ async function finale() {
         body: JSON.stringify({ name: S.name, age: S.age, grade: S.grade, language: S.lang, questionnaire: S.q, rounds: S.rounds }) });
       if (!r.ok) throw new Error(await r.text());
       S.report = await r.json();
+      try { await initLearnerFromReport(S.report); } catch (e) { console.warn("learner profile not created", e); }
       const hist = store.get("ww_history", []);
       hist.push({ date: new Date().toISOString(), name: S.name || "Child", lang: S.lang, age: S.age,
                   idx: Object.fromEntries(Object.entries(S.report.conditions).map(([k, c]) => [k, c.index])) });
@@ -796,6 +813,7 @@ function gauge(index, band) {
 }
 
 function showReport(r) {
+  applyFormat(null);
   S.practice = false; $("coins").hidden = true;
   const conds = Object.entries(r.conditions);
   const groups = {};
@@ -855,6 +873,10 @@ function showReport(r) {
     </section>
 
     <section class="tabpane" data-p="plan" hidden><h2 class="pdf-only" style="margin-top:22px">Action plan</h2>
+      ${P.learner ? `<div class="note noprint" style="background:linear-gradient(90deg,#EFEAFF,#E3F4FF)"><b>🎯 Personalised practice for ${child.name}</b>
+        <div class="small" style="margin:6px 0">Short daily sessions that adapt to ${child.name}: harder after 3 right answers, easier after a mistake, with extra practice on the letters ${child.name} mixed up.</div>
+        <ul class="small" style="margin:4px 0 10px">${(P.learner.format.reasons || []).map(x => `<li>${x}</li>`).join("")}</ul>
+        <button class="btn sun" id="startPractice">▶ Start today's practice</button></div>` : ""}
       ${r.action_plan.length ? `<p>Focus on these skills at home for the next 6–8 weeks. Little and often (10–15 minutes a day) works best.</p>
       <div class="plan">${r.action_plan.map(p => `<div class="p"><b>${SKILL_GAME[p.skill]?.icon || "📌"} ${p.label}</b><ul>${p.activities.map(a => `<li>${a}</li>`).join("")}</ul>
         ${SKILL_GAME[p.skill] ? `<button class="ghost noprint" data-practice="${SKILL_GAME[p.skill].id}">🎮 Practise with ${SKILL_GAME[p.skill].title(UI())}</button>` : ""}</div>`).join("")}</div>`
@@ -872,7 +894,8 @@ function showReport(r) {
     app.querySelectorAll("[role=tab]").forEach(x => x.setAttribute("aria-selected", x === t));
     app.querySelectorAll(".tabpane").forEach(p => p.hidden = p.dataset.p !== t.dataset.t);
   });
-  app.querySelectorAll("[data-practice]").forEach(b => b.onclick = () => { S.practice = true; playGame(GAMES.find(g => g.id === b.dataset.practice)); });
+  app.querySelectorAll("[data-practice]").forEach(b => b.onclick = () => practiceSingle(b.dataset.practice));
+  if ($("startPractice")) $("startPractice").onclick = () => practiceHome();
   $("print").onclick = () => window.print();
   $("new").onclick = setup;
   $("dl").onclick = async () => {
@@ -911,6 +934,344 @@ function history() {
     ${hist.slice().reverse().map(h => `<tr><td>${new Date(h.date).toLocaleString()}</td><td>${h.name} (${h.age})</td><td>${h.idx.dyslexia ?? "–"}</td><td>${h.idx.dyscalculia ?? "–"}</td><td>${h.idx.attention ?? "–"}</td></tr>`).join("")}
     </tbody></table><p><button class="btn" id="back">← Back</button></p></div>`);
   $("back").onclick = setup;
+}
+
+/* =====================================================================
+   ADAPTIVE PRACTICE  (the screening above is never adapted; only practice is)
+   Python decides what to practise and tracks mastery (app/adaptive.py, Bayesian Knowledge Tracing).
+   Here the level moves live: 3 right in a row -> level up, a mistake -> level down.
+   ===================================================================== */
+const P = { learner: null, key: null, fmt: null };
+const LKEY = "ww_learners";
+const learnerKey = (name) => (name || "Child").trim().toLowerCase();
+const allLearners = () => store.get(LKEY, {});
+function saveLearner() { const all = allLearners(); all[P.key] = P.learner; store.set(LKEY, all); }
+async function api(path, body) {
+  const r = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(await r.text()); return r.json();
+}
+
+// called after every screening: build (or refresh) this child's learner profile, keep their practice history
+async function initLearnerFromReport(report) {
+  const mistakes = S.rounds.flatMap(rd => (rd.mistakes || []).map(m => ({ game: rd.game, expected: m.expected, chosen: m.chosen })));
+  const fresh = await api("/api/learner/init", { report, mistakes });
+  const key = learnerKey(S.name), old = allLearners()[key];
+  fresh.name = S.name || "Child"; fresh.lang = S.lang; fresh.age = S.age;
+  if (old) { fresh.sessions = old.sessions || []; fresh.history = old.history || []; }
+  fresh.history = [...(fresh.history || []), { date: new Date().toISOString(), mastery: { ...fresh.mastery }, screening: true }];
+  P.learner = fresh; P.key = key; saveLearner();
+}
+
+/* ---------- format: bigger letters, spacing, slower speech, more time, calm ---------- */
+function applyFormat(f) {
+  P.fmt = f || null; const b = document.body;
+  if (!f) { b.classList.remove("fmt"); b.style.removeProperty("--fmt-scale"); b.style.removeProperty("--fmt-space"); return; }
+  b.classList.add("fmt"); b.style.setProperty("--fmt-scale", f.font_scale || 1); b.style.setProperty("--fmt-space", (f.letter_spacing || 0) + "em");
+}
+const TF = () => (P.fmt && P.fmt.time_factor) || 1;
+const calm = () => !!(P.fmt && P.fmt.calm);
+
+/* ---------- staircase ---------- */
+function Stair(level) {
+  return {
+    level, start: level, streak: 0, ups: 0, answers: [],
+    record(a) { this.answers.push({ level: this.level, ...a }); },
+    step(ok) {
+      if (ok) { if (++this.streak >= 3) { this.streak = 0; if (this.level < 5) { this.level++; this.ups++; levelUp(this.level); } } }
+      else { this.streak = 0; if (this.level > 1) this.level--; }
+    },
+  };
+}
+function levelUp(lv) {
+  if (!calm()) SFX.fanfare(); else SFX.good();
+  const f = document.createElement("div"); f.className = "float lvlup"; f.textContent = `⬆ Level ${lv}!`;
+  f.style.left = innerWidth / 2 - 70 + "px"; f.style.top = innerHeight / 3 + "px"; document.body.appendChild(f); setTimeout(() => f.remove(), 1200);
+}
+const stars = lv => "★".repeat(lv) + "☆".repeat(5 - lv);
+const lvlBadge = st => `<span class="lvl" title="Practice level">Level ${st.level} <span>${stars(st.level)}</span></span>`;
+function pcard(st, title, inner) {
+  render(`<div class="card practice"><div class="row" style="justify-content:space-between;margin-bottom:8px"><p class="progress" style="margin:0">🎯 ${title}</p>${lvlBadge(st)}</div>${inner}</div>`);
+}
+const focusOf = (act, i) => (act.focus || [])[i % Math.max(1, (act.focus || []).length)];
+const pickWeighted = (items, isFocus) => { const f = items.filter(isFocus); return f.length && Math.random() < 0.6 ? pick(f) : pick(items); };
+
+/* ---------- practice games (one function per game, each item built at the CURRENT level) ---------- */
+const PRACTICE = {
+  async mirror(act, n, st) {
+    const u = UI(), rounds = Math.max(2, Math.round(n / 3));
+    for (let r = 0; r < rounds; r++) {
+      const lv = st.level, focus = focusOf(act, r);
+      const base = (focus && C().mirror.find(m => m.target === focus[0])) || pick(C().mirror);
+      let dist = [...base.distractors]; if (focus && focus[0] === base.target && !dist.includes(focus[1])) dist.unshift(focus[1]);
+      dist = dist.slice(0, [1, 2, 3, 4, 4][lv - 1]);
+      const TILES = [12, 15, 16, 20, 20][lv - 1], TARGETS = [4, 5, 5, 6, 6][lv - 1], SECONDS = [22, 19, 16, 13, 10][lv - 1] * TF();
+      const items = shuffle([...Array(TARGETS).fill(base.target), ...Array.from({ length: TILES - TARGETS }, () => pick(dist))]);
+      const pair = focus && focus[0] === base.target ? focus.join("|") : null;
+      const cols = innerWidth < 640 ? 4 : (TILES <= 12 ? 4 : 5);
+      await new Promise(res => {
+        pcard(st, `${u.mirrorTitle} · ${r + 1}/${rounds}`, `<div class="hud"><div style="font-weight:700">${u.find} <span class="target">${base.target}</span></div>
+          <div class="timer"><div id="tbar"></div></div></div>
+          <div class="tiles" style="grid-template-columns:repeat(${cols},1fr);max-width:calc((100dvh - 300px) * ${cols} / ${Math.ceil(TILES / cols)})">${items.map((t, k) => `<button class="tile ans" data-k="${k}">${t}</button>`).join("")}</div>`);
+        let found = 0, misses = 0, ended = false; const t0 = performance.now();
+        const finish = () => { if (ended) return; ended = true; clearInterval(tick);
+          // each Mirror Hunt round is long, so it moves one level per round: all found with at most 1 slip -> up, otherwise down
+          const ok = found === TARGETS && misses <= 1;
+          if (ok && st.level < 5) { st.level++; st.ups++; levelUp(st.level); } else if (!ok && st.level > 1) st.level--;
+          setTimeout(res, 350); };
+        app.querySelectorAll(".tile").forEach(b => b.onclick = () => {
+          if (ended) return; b.disabled = true; const t = items[b.dataset.k];
+          if (t === base.target) { b.classList.add("ok"); SFX.good(); if (!calm()) coinPop(...where(b)); st.record({ correct: true, pair }); if (++found === TARGETS) finish(); }
+          else { b.classList.add("bad"); SFX.bad(); misses++; st.record({ correct: false, expected: base.target, chosen: t }); }
+        });
+        const tick = setInterval(() => { const left = 1 - (performance.now() - t0) / (SECONDS * 1000); $("tbar").style.width = Math.max(left, 0) * 100 + "%"; if (left <= 0) finish(); }, 100);
+      });
+    }
+  },
+
+  async letters(act, n, st) {
+    const u = UI(), all = C().letters || [];
+    for (let i = 0; i < n; i++) {
+      const focus = focusOf(act, i), it = pickWeighted(all, x => focus && x.letter === focus[0]);
+      let ds = [...it.distractors]; if (focus && focus[0] === it.letter && !ds.includes(focus[1])) ds.unshift(focus[1]);
+      const opts = shuffle([it.letter, ...ds.slice(0, [1, 2, 3, 3, 3][st.level - 1])]);
+      pcard(st, `${u.letterTitle} · ${i + 1}/${n}`, `<div class="speaker">👂</div>
+        <div class="letters" style="grid-template-columns:repeat(${opts.length},1fr)">${opts.map((o, k) => `<button class="letter ans" id="l${k}" disabled>${o}</button>`).join("")}</div>
+        <p class="center" style="margin-top:14px"><button class="ghost" id="again">🔁 ${u.replay}</button></p>`);
+      const btns = opts.map((_, k) => $("l" + k));
+      await say(it.say); btns.forEach(b => b.disabled = false); $("again").onclick = () => say(it.say);
+      const { chosen, el } = await oneTry(btns, "l" + opts.indexOf(it.letter)); const ch = opts[+chosen.slice(1)], ok = ch === it.letter;
+      ok ? (SFX.good(), calm() || coinPop(...where(el))) : SFX.bad();
+      st.record({ correct: ok, expected: it.letter, chosen: ch, pair: focus && focus[0] === it.letter ? focus.join("|") : null }); st.step(ok); await sleep(650);
+    }
+  },
+
+  async realword(act, n, st) {
+    const u = UI(), byLen = a => [...a].sort((x, y) => [...x].length - [...y].length);
+    const R = byLen(C().realword.real), A = byLen(C().realword.alien);
+    const band = (arr, lv) => { const k = arr.length, cut = [[0, .4], [0, .6], [0, 1], [.4, 1], [.6, 1]][lv - 1]; return arr.slice(Math.floor(k * cut[0]), Math.max(Math.ceil(k * cut[1]), Math.floor(k * cut[0]) + 1)); };
+    for (let i = 0; i < n; i++) {
+      const isReal = Math.random() < .5, word = pick(band(isReal ? R : A, st.level));
+      pcard(st, `${u.realTitle} · ${i + 1}/${n}`, `<div class="word">${word}</div>
+        <div class="two"><button class="c-teal ans" id="r">✔ ${u.real}</button><button class="c-purple ans" id="a">👽 ${u.alien}</button></div>`);
+      const { chosen, el } = await oneTry([$("r"), $("a")], isReal ? "r" : "a"); const ok = (chosen === "r") === isReal;
+      ok ? (SFX.good(), calm() || coinPop(...where(el))) : SFX.bad();
+      st.record({ correct: ok }); st.step(ok); await sleep(600);
+    }
+  },
+
+  async rhyme(act, n, st) {
+    const u = UI();
+    for (let i = 0; i < n; i++) {
+      const p = pick(C().rhyme), gap = [900, 700, 500, 350, 250][st.level - 1], replay = st.level <= 3;
+      pcard(st, `${u.rhymeTitle} · ${i + 1}/${n}`, `<div class="speaker">🔊</div><p class="center muted" id="st" style="min-height:1.6em">👂 ${u.listen}</p>
+        <div class="two"><button class="c-green ans" id="y" disabled>👍 ${u.yes}</button><button class="c-orange ans" id="n" disabled>👎 ${u.no}</button></div>
+        <p class="center" style="margin-top:14px">${replay ? `<button class="ghost" id="again" disabled>🔁 ${u.replay}</button>` : ""}</p>`);
+      const play = async () => { $("st").style.visibility = "visible"; ["y", "n", "again"].forEach(id => $(id) && ($(id).disabled = true));
+        await say(p.a); await sleep(gap); await say(p.b); ["y", "n", "again"].forEach(id => $(id) && ($(id).disabled = false)); $("st").style.visibility = "hidden"; };
+      await play(); if ($("again")) $("again").onclick = play;
+      const { chosen, el } = await oneTry([$("y"), $("n")], p.rhymes ? "y" : "n"); const ok = (chosen === "y") === p.rhymes;
+      ok ? (SFX.good(), calm() || coinPop(...where(el))) : SFX.bad();
+      st.record({ correct: ok }); st.step(ok); await sleep(650);
+    }
+  },
+
+  async memory(act, n, st) {
+    const u = UI(), trials = Math.max(3, Math.round(n / 2));
+    for (let t = 0; t < trials; t++) {
+      const len = st.level + 1, seq = Array.from({ length: len }, () => Math.floor(Math.random() * 4));
+      pcard(st, `${u.memTitle} · ${t + 1}/${trials}`, `<h2 class="center" id="st">👀 ${u.watch}</h2>
+        <div class="pads">${PADS.map((p, i) => `<button class="pad ans" data-i="${i}" style="background:${p.c}" disabled>${p.e}</button>`).join("")}</div>`);
+      const pads = [...app.querySelectorAll(".pad")]; await sleep(700);
+      const show = 560 * TF();
+      for (const i of seq) { pads[i].classList.add("lit"); SFX.pad(i); await sleep(show); pads[i].classList.remove("lit"); await sleep(200); }
+      window.__seq = seq; $("st").textContent = "👉 " + u.yourTurn; pads.forEach(p => p.disabled = false);
+      let pos = 0; const ok = await new Promise(res => pads.forEach(p => p.onclick = () => {
+        const i = +p.dataset.i; p.classList.add("lit"); SFX.pad(i); setTimeout(() => p.classList.remove("lit"), 200);
+        if (i === seq[pos]) { if (++pos === seq.length) res(true); } else res(false);
+      }));
+      pads.forEach(x => x.disabled = true); ok ? SFX.good() : SFX.bad();
+      st.record({ correct: ok });
+      // memory moves one step per trial: a full sequence right -> longer next time, wrong -> shorter
+      if (ok && st.level < 5) { st.level++; st.ups++; levelUp(st.level); } else if (!ok && st.level > 1) st.level--;
+      await sleep(800);
+    }
+  },
+
+  async naming(act, n, st) {
+    const u = UI();
+    for (let i = 0; i < n; i++) {
+      const board = shuffle(C().naming).slice(0, [3, 4, 5, 6, 6][st.level - 1]), t = pick(board);
+      pcard(st, `${u.nameTitle} · ${i + 1}/${n}`, `<div class="speaker">🔊</div>
+        <div class="pics">${board.map((b, k) => `<button class="pic ans" id="p${k}" disabled>${b.pic}</button>`).join("")}</div>
+        <p class="center" style="margin-top:14px">${st.level < 5 ? `<button class="ghost" id="again">🔁 ${u.replay}</button>` : ""}</p>`);
+      const btns = board.map((_, k) => $("p" + k));
+      await say(t.word); btns.forEach(b => b.disabled = false); if ($("again")) $("again").onclick = () => say(t.word);
+      const { chosen, el } = await oneTry(btns, "p" + board.indexOf(t)); const ok = board[+chosen.slice(1)] === t;
+      ok ? (SFX.good(), calm() || coinPop(...where(el))) : SFX.bad();
+      st.record({ correct: ok }); st.step(ok); await sleep(650);
+    }
+  },
+
+  async spell(act, n, st) {
+    const u = UI(), words = C().spell, count = Math.max(3, Math.round(n / 2));
+    for (let i = 0; i < count; i++) {
+      const pool = st.level <= 2 ? words.filter(w => w.units.length <= 2) : words, w = pick(pool.length ? pool : words);
+      const traps = [w.trap]; if (st.level >= 4) { const other = shuffle(words.flatMap(x => x.units)).find(x => !w.units.includes(x) && x !== w.trap); if (other) traps.push(other); }
+      const tiles = shuffle([...w.units, ...traps]);
+      pcard(st, `${u.spellTitle} · ${i + 1}/${count}`, `<div class="speaker">🔊</div>
+        <div class="slots">${w.units.map((_, k) => `<div class="slot" id="s${k}"></div>`).join("")}</div>
+        <div class="units">${tiles.map((t, k) => `<button class="unit ans" data-k="${k}" disabled>${t}</button>`).join("")}</div>
+        <p class="center" style="margin-top:16px" id="foot"><button class="ghost" id="again">🔁 ${u.replay}</button></p>`);
+      const btns = [...app.querySelectorAll(".unit")];
+      await say(w.word); btns.forEach(b => b.disabled = false); $("again").onclick = () => say(w.word);
+      let pos = 0; const picked = [];
+      await new Promise(res => btns.forEach(b => b.onclick = () => { SFX.click(); b.disabled = true; picked.push(tiles[b.dataset.k]); $("s" + pos).textContent = tiles[b.dataset.k]; if (++pos === w.units.length) res(); }));
+      btns.forEach(b => b.disabled = true);
+      picked.forEach((p, k) => { const ok = p === w.units[k]; $("s" + k).classList.add(ok ? "ok" : "bad"); st.record({ correct: ok, expected: w.units[k], chosen: p }); });
+      const all = picked.every((p, k) => p === w.units[k]);
+      if (all) { SFX.good(); calm() || coinPop(...where($("s0"))); } else { SFX.bad(); $("foot").innerHTML = `<span style="font-size:2rem;font-weight:800;color:var(--green)">✔ ${w.units.join("")}</span>`; }
+      st.step(all); await sleep(1500);
+    }
+  },
+
+  async dots(act, n, st) {
+    const u = UI();
+    for (let i = 0; i < n; i++) {
+      const [lo, hi] = [[1, 3], [1, 5], [3, 7], [4, 9], [5, 9]][st.level - 1], k = lo + Math.floor(Math.random() * (hi - lo + 1));
+      pcard(st, `${u.dotsTitle} · ${i + 1}/${n}`, `<div class="dotbox" id="box"></div><div class="nums" id="opts"></div>`);
+      const box = $("box"), W = box.clientWidth - 40, H = box.clientHeight - 40, pts = [];
+      let guard = 0; while (pts.length < k && guard++ < 500) { const p = [10 + Math.random() * W, 10 + Math.random() * H]; if (pts.every(q => Math.hypot(p[0] - q[0], p[1] - q[1]) > 44)) pts.push(p); }
+      await sleep(450); box.innerHTML = pts.map(p => `<div class="dot" style="left:${p[0]}px;top:${p[1]}px"></div>`).join("");
+      await sleep([2000, 1600, 1300, 1000, 800][st.level - 1] * TF());
+      box.innerHTML = `<div style="display:grid;place-items:center;height:100%;font-size:3rem;color:#fff">❓</div>`;
+      const opts = shuffle([...new Set([k, ...shuffle([k - 2, k - 1, k + 1, k + 2].filter(x => x >= 1 && x <= 10)).slice(0, 3)])]);
+      $("opts").innerHTML = opts.map((o, j) => `<button class="num ans" id="d${j}">${o}</button>`).join("");
+      const { chosen, el } = await oneTry(opts.map((_, j) => $("d" + j)), "d" + opts.indexOf(k)); const ok = opts[+chosen.slice(1)] === k;
+      ok ? (SFX.good(), calm() || coinPop(...where(el))) : SFX.bad();
+      st.record({ correct: ok }); st.step(ok); await sleep(600);
+    }
+  },
+
+  async compare(act, n, st) {
+    const u = UI();
+    const make = lv => {
+      if (lv === 5) return pick([[47, 74], [91, 19], [36, 63], [58, 85], [61, 59], [72, 68], [29, 31]]);
+      const minD = [5, 3, 2, 1][lv - 1], maxD = [8, 8, 4, 2][lv - 1];
+      for (;;) { const a = 1 + Math.floor(Math.random() * 9), b = 1 + Math.floor(Math.random() * 9), d = Math.abs(a - b); if (d >= minD && d <= maxD) return [a, b]; }
+    };
+    for (let i = 0; i < n; i++) {
+      const [a, b] = make(st.level);
+      pcard(st, `${u.cmpTitle} · ${i + 1}/${n}`, `<div class="two"><button class="c-blue ans bignum" id="A">${a}</button><button class="c-purple ans bignum" id="B">${b}</button></div>`);
+      const { chosen, el } = await oneTry([$("A"), $("B")], a > b ? "A" : "B"); const ok = (chosen === "A" ? a : b) === Math.max(a, b);
+      ok ? (SFX.good(), calm() || coinPop(...where(el))) : SFX.bad();
+      st.record({ correct: ok }); st.step(ok); await sleep(450);
+    }
+  },
+};
+
+/* ---------- practice screens ---------- */
+async function practiceHome(key) {
+  if (key) { P.key = key; P.learner = allLearners()[key]; }
+  if (!P.learner) return setup();
+  S.lang = P.learner.lang || S.lang; S.age = P.learner.age || S.age; S.name = P.learner.name === "Child" ? "" : P.learner.name;
+  applyFormat(null); $("coins").hidden = true;
+  let plan; try { plan = await api("/api/practice/plan", { learner: P.learner }); } catch (e) { render(`<div class="card"><p>Could not reach the server: ${e}</p></div>`); return; }
+  const u = UI(), acts = plan.activities, f = P.learner.format || {};
+  const sessions = (P.learner.sessions || []).length;
+  render(`<div class="owl-row"><button class="owl" id="owl">🦉</button><div class="bubble">${sessions ? "Welcome back" : "Hi"} ${P.learner.name}! Here's today's practice. It gets harder when you're doing well and easier when it's tricky.</div></div>
+    <div class="card">
+      <h2>🎯 Today's practice <span class="small muted">(about ${Math.round(acts.length * plan.round_size * 0.15 + 1)} minutes)</span></h2>
+      <div class="plan" style="margin-top:12px">${acts.map(a => { const g = GAMES.find(x => x.id === a.game); return `<div class="p">
+        <div style="font-size:2.2rem">${g.icon}</div><b>${g.title(u)}</b>
+        <div class="small muted" style="margin:4px 0">Starts at level ${a.level} <span style="color:var(--sun)">${stars(a.level)}</span></div>
+        <div class="bar"><div style="width:${Math.round(a.mastery * 100)}%;background:var(--teal)"></div></div>
+        <div class="small muted">Mastery ${Math.round(a.mastery * 100)}%${a.focus.length ? ` · extra practice on ${a.focus.map(p => p[0]).join(", ")}` : ""}</div></div>`; }).join("")}</div>
+      <h3>⚙️ Settings for ${P.learner.name}</h3>
+      <ul class="small">${(f.reasons || []).map(r => `<li>${r}</li>`).join("")}</ul>
+      <div class="row" style="margin-top:14px"><button class="btn sun" id="go">▶ Start practice</button><button class="ghost" id="prog">📈 Progress</button><button class="ghost" id="home">🏠 Home</button></div>
+    </div>`);
+  $("owl").onclick = () => {}; $("go").onclick = () => runPractice(acts, plan.round_size);
+  $("prog").onclick = () => progressPage(); $("home").onclick = landing;
+}
+
+async function runPractice(acts, n) {
+  applyFormat(P.learner.format); S.practice = true; $("coins").hidden = false; S.coins = 0; $("coinN").textContent = 0;
+  const results = [], t0 = Date.now(), u = UI();
+  for (const act of acts) {
+    const g = GAMES.find(x => x.id === act.game);
+    SFX.jingle();
+    await new Promise(res => {
+      render(`<div class="card center practice"><div style="font-size:4.5rem;animation:bob 1.6s infinite">${g.icon}</div><h2>${g.title(u)}</h2>
+        <p style="font-size:1.1rem">${g.instr(u)}</p><p><span class="lvl">Level ${act.level} <span>${stars(act.level)}</span></span></p>
+        <button class="btn" id="go">${u.start} ▶</button></div>`);
+      setTimeout(() => say(g.instr(u)), 500); $("go").onclick = res; $("go").focus();
+    });
+    const st = Stair(act.level), t1 = Date.now();
+    await PRACTICE[act.game](act, n, st);
+    results.push({ game: act.game, start_level: act.level, end_level: st.level, seconds: Math.round((Date.now() - t1) / 1000), answers: st.answers });
+  }
+  S.practice = false;
+  const before = { ...P.learner.mastery };
+  try { P.learner = { ...(await api("/api/practice/update", { learner: P.learner, results })), name: P.learner.name, lang: P.learner.lang, age: P.learner.age }; saveLearner(); }
+  catch (e) { render(`<div class="card"><p>Could not save practice: ${e}</p></div>`); return; }
+  if (!calm()) { SFX.fanfare(); confetti(30); }
+  const last = P.learner.sessions[P.learner.sessions.length - 1];
+  render(`<div class="card practice">
+    <div class="center"><div style="font-size:4.5rem;animation:bob 1.4s infinite">🏅</div><h2>Practice done! ${S.coins ? `🪙 ${S.coins}` : ""}</h2></div>
+    <div class="plan" style="margin-top:10px">${last.summary.map(s => { const g = GAMES.find(x => x.id === s.game); const up = (s.end_level || 0) - (s.start_level || 0); return `<div class="p">
+      <b>${g.icon} ${g.title(UI())}</b>
+      <div class="small">${s.correct}/${s.total} right · level ${s.start_level} → <b>${s.end_level}</b> ${up > 0 ? "⬆" : up < 0 ? "⬇" : ""}</div>
+      <div class="small muted" style="margin-top:6px">Mastery ${Math.round((s.before || 0) * 100)}% → <b>${Math.round(s.after * 100)}%</b></div>
+      <div class="bar" style="margin-top:4px"><div style="width:${Math.round(s.after * 100)}%;background:${s.after >= .9 ? "var(--green)" : "var(--teal)"}"></div></div></div>`; }).join("")}</div>
+    <p class="small muted" style="margin-top:12px">Levels go up after 3 right answers in a row and down after a mistake, so practice stays "just hard enough". Mastery is estimated with Bayesian Knowledge Tracing.</p>
+    <div class="row"><button class="btn" id="nextPractice">🎯 Next practice</button><button class="ghost" id="prog">📈 Progress</button><button class="ghost" id="home">🏠 Home</button></div></div>`);
+  $("nextPractice").onclick = () => practiceHome(); $("prog").onclick = progressPage; $("home").onclick = landing;
+}
+
+function progressPage() {
+  applyFormat(null); $("coins").hidden = true;
+  const L = P.learner, hist = L.history || [], skills = Object.keys(L.mastery || {});
+  const cols = ["#7B61D9", "#0E9384", "#F07A3A", "#3D8BFD", "#E04F5F", "#D9A100", "#2FA866", "#F46FA6", "#5D6785"];
+  const W = 620, H = 200, x = i => 36 + i * (W - 56) / Math.max(hist.length - 1, 1), y = v => H - 22 - v * (H - 40);
+  const chart = hist.length > 1 ? `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Mastery over time">
+      ${[0, .5, .9, 1].map(v => `<line x1="36" x2="${W - 20}" y1="${y(v)}" y2="${y(v)}" stroke="${v === .9 ? "#BFE6CF" : "#E7E2F3"}" ${v === .9 ? 'stroke-dasharray="4 4"' : ""}/><text x="2" y="${y(v) + 4}" font-size="10" fill="#5D6785">${Math.round(v * 100)}%</text>`).join("")}
+      ${skills.map((s, k) => `<polyline fill="none" stroke="${cols[k % cols.length]}" stroke-width="2.5" points="${hist.map((h, i) => h.mastery[s] != null ? `${x(i)},${y(h.mastery[s])}` : "").join(" ")}"/>`).join("")}
+      ${hist.map((h, i) => h.screening ? `<text x="${x(i)}" y="${H - 6}" font-size="9" text-anchor="middle" fill="#5D6785">screen</text>` : "").join("")}
+    </svg><p class="small">${skills.map((s, k) => `<span style="color:${cols[k % cols.length]};font-weight:700">● ${SKILL_GAME[s]?.title(UI()) || s}</span>`).join(" &nbsp; ")} <span class="muted">· dashed line = mastered (90%)</span></p>`
+    : `<p class="muted">Play a practice session to start the progress chart.</p>`;
+  const mins = Math.round((L.sessions || []).reduce((a, s) => a + (s.seconds || 0), 0) / 60);
+  const f = L.format || {};
+  const toggles = [["font", "Bigger letters and spacing", f.font_scale > 1], ["speech", "Slower speech", f.speech_rate < 1], ["time", "More time", f.time_factor > 1], ["short", "Shorter rounds, fewer animations", f.calm]];
+  render(`<div class="card report">
+    <div class="row" style="justify-content:space-between"><h2 style="margin:0">📈 ${L.name}'s progress</h2>
+      <div class="row noprint"><button class="btn sun" id="go">🎯 Practise</button><button class="ghost" id="home">🏠 Home</button></div></div>
+    <p class="muted">${(L.sessions || []).length} practice session${(L.sessions || []).length === 1 ? "" : "s"} · ${mins} minute${mins === 1 ? "" : "s"} · ${(L.mastered || []).length} skill${(L.mastered || []).length === 1 ? "" : "s"} mastered</p>
+    <h3>Mastery over time</h3>${chart}
+    <h3>Where ${L.name} is now</h3>
+    ${skills.map(s => { const g = SKILL_GAME[s], v = L.mastery[s], lv = L.levels?.[g?.id]; return `<div class="skill"><div class="row" style="justify-content:space-between"><b>${g?.icon || ""} ${g?.title(UI()) || s}</b>
+      <span class="small">${v >= .9 ? "✅ mastered" : `level ${lv || 1} ${stars(lv || 1)}`}</span></div>
+      <div class="bar"><div style="width:${Math.round(v * 100)}%;background:${v >= .9 ? "var(--green)" : "var(--teal)"}"></div></div></div>`; }).join("")}
+    ${Object.keys(L.confusions || {}).length ? `<p class="small"><b>Still mixing up:</b> ${Object.entries(L.confusions).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k]) => k.replace("|", " ↔ ")).join(", ")}</p>` : `<p class="small">No letter mix-ups left on the list. 🎉</p>`}
+    <h3>⚙️ Practice settings</h3><p class="small muted">Chosen from the screening. You can change them.</p>
+    ${toggles.map(([k, t, on]) => `<label class="row small" style="font-weight:500;margin:6px 0"><input type="checkbox" data-fmt="${k}" ${on ? "checked" : ""} style="width:20px;height:20px"> ${t}</label>`).join("")}
+  </div>`);
+  app.querySelectorAll("[data-fmt]").forEach(c => c.onchange = () => {
+    const F = P.learner.format, on = c.checked;
+    if (c.dataset.fmt === "font") { F.font_scale = on ? 1.25 : 1; F.letter_spacing = on ? .12 : 0; }
+    if (c.dataset.fmt === "speech") F.speech_rate = on ? .8 : 1;
+    if (c.dataset.fmt === "time") F.time_factor = on ? 1.5 : 1;
+    if (c.dataset.fmt === "short") { F.calm = on; F.round_size = on ? 5 : 8; }
+    F.reasons = [...(F.reasons || []).filter(r => !r.startsWith("Changed by a parent")), "Changed by a parent or teacher on the progress page."];
+    saveLearner();
+  });
+  $("go").onclick = () => practiceHome(); $("home").onclick = landing;
+}
+
+function practiceSingle(gameId) {
+  if (!P.learner) return;
+  const g = GAMES.find(x => x.id === gameId), conf = Object.entries(P.learner.confusions || {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k.split("|"));
+  runPractice([{ game: gameId, skill: g.skill, level: (P.learner.levels || {})[gameId] || 1, mastery: (P.learner.mastery || {})[g.skill] || .3,
+                 focus: ["mirror", "letters", "spell"].includes(gameId) ? conf : [] }], (P.learner.format || {}).round_size || 8);
 }
 
 /* ------------------------- boot ------------------------- */

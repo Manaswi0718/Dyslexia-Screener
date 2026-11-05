@@ -33,7 +33,7 @@ Somewhere around 5 to 15% of children have dyslexia. That's two to six children 
 - Dyslexia, dyscalculia and ADHD often come together. A child with one is 2 to 3 times more likely to have another, but most tools check for one thing.
 - Parents get a score and no idea what to do with it.
 
-For HI-03 we narrowed the problem to this: early screening, through games, for children who may have a learning disability, in Indian languages, followed by a practice plan for each child's weak areas.
+For HI-03 we narrowed the problem to this: early screening, through games, for children who may have a learning disability, in Indian languages, followed by practice that adapts to each child's weak areas, pace and needs.
 
 ## What the app does
 
@@ -64,6 +64,38 @@ At the end, the parent gets a report with:
 - home activities for the three weakest skills, and a button to practise each one in the game
 - who to see in India, and what usually helps after a diagnosis (school accommodations, the SLD certificate under the RPwD Act 2016, assistive technology)
 - a chart of past results if the child is screened again, and a PDF download
+- a personalised practice plan that adapts to the child (next section)
+
+## Adaptive practice
+
+Screening tells a parent what's hard. HI-03 asks for the next part too: learning that adapts its content, pace and format to the child. So after the report, each child gets a practice profile and short daily sessions.
+
+The screening itself never adapts. Every child has to get the same games there, or the scores can't be compared. Only practice changes.
+
+**What adapts:**
+
+- **Difficulty.** Every practice game has five levels. Mirror Hunt goes from 12 tiles, two kinds of letter and 22 seconds, up to 20 tiles with four near-identical letters and 10 seconds. Bigger Number goes from 2 vs 9 up to 47 vs 74. Three right answers in a row moves the child up a level, and a mistake moves them down one. That keeps the child at roughly 75 to 80% correct: hard enough to learn something, easy enough not to give up.
+- **Content.** The app remembers the exact letters a child mixes up (say ब and व) and puts those into practice more often. Each time the child gets that pair right, it fades from the list.
+- **Format and pace.** Settings come from the screening, and each one is explained to the parent. Trouble with look-alike letters gives bigger letters with more spacing. Trouble hearing sounds gives slower speech. Slow answers give 50% more time. Attention signs give shorter rounds and fewer animations. A parent or teacher can switch any of these on or off.
+- **What to practise.** Each session picks the child's two weakest skills plus one stronger one, starting with the stronger one so the child begins with a success.
+
+**How the app tracks learning.** Mastery of each skill is estimated with Bayesian Knowledge Tracing (`app/adaptive.py`). It's a standard model in learning software, and it allows for lucky guesses and careless slips, so one answer doesn't swing the estimate too far. Easy items count as weaker evidence than hard ones, and a child can't reach "mastered" (90%) without doing well at level 4 or 5. The progress page shows mastery over time for every skill, the current level, the letters still being mixed up, and minutes practised. Profiles for several children can live on one device, which suits a teacher.
+
+**Does adapting help?** We simulated 500 children who struggled in screening, each with their own starting level and learning speed, over 12 practice sessions (`ml/simulate_adaptive.py`):
+
+| Practice type | Skill (level 1 to 5) | Answers right | Reached level 4+ |
+|---|---|---|---|
+| Always easy (level 1) | 1.5 to 2.2 | 93% | 0% |
+| Always medium (level 3) | 1.5 to 3.3 | 52% (only 20% in the first session) | 25% |
+| Adaptive | 1.6 to 3.6 | 79% | 28% |
+
+![Adaptive practice simulation](docs/adaptive_simulation.png)
+
+Easy practice keeps children happy but they barely improve. Medium practice works eventually, but in the first session a struggling child gets only one answer in five right, which is how children come to hate reading. Adaptive practice improved skills the most and kept children in the "just hard enough" range from the first session. This is a simulation, so it shows the engine behaves sensibly; real children would be needed to measure the actual effect.
+
+| Today's plan | A practice round with its level | Progress over time |
+|---|---|---|
+| ![Practice plan](docs/screenshots/practice-plan.png) | ![Practice level](docs/screenshots/practice-level.png) | ![Progress](docs/screenshots/practice-progress.png) |
 
 ## How the score is calculated
 
@@ -110,13 +142,15 @@ To reproduce: `python ml/train.py data/Dyt-desktop.csv`. Results are written to 
 
 ## Testing
 
-There are 16 automated tests in `tests/`, and they run on every push through GitHub Actions (the badge at the top). They check that:
+There are 25 automated tests in `tests/`, and they run on every push through GitHub Actions (the badge at the top). They check that:
 
 - a child who plays well gets "Unlikely" and a child who struggles gets "Likely" or "Very likely"
 - random guessing never looks normal, even when the answers are fast
 - slow but correct reading counts for more in Hindi, Telugu, Tamil and Kannada than in English
 - the questionnaire can't add more than 15 points, and the attention game picks up impulsive tapping
 - the API returns a complete report and rejects broken requests
+- mastery goes up with right answers and down with wrong ones, easy items count for less, and a child can't be marked "mastered" from easy levels alone
+- practice settings follow the screening, practice targets the child's weak skills and their own letter mix-ups, and mix-ups fade once practised
 - every language has every piece of text, no look-alike round contains its own answer, no made-up word is also on the real-word list, and the spoken words have audio
 
 Run them with `pytest -q`.
@@ -127,6 +161,7 @@ Run them with `pytest -q`.
 |---|---|
 | ML | Python: XGBoost, scikit-learn, pandas, NumPy. SHAP values come from XGBoost's `pred_contribs` on the server; the `shap` library is used for the training plot. |
 | Scoring | `app/scoring.py` (Python) |
+| Adaptive practice | `app/adaptive.py` (Python): Bayesian Knowledge Tracing, 3-up/1-down staircase, rule-based format profile |
 | Backend | FastAPI and Uvicorn |
 | Frontend | HTML, CSS and JavaScript, no framework. Sound effects use the Web Audio API; the map, gauges and charts are SVG. |
 | Speech | Microsoft Edge neural voices through the `edge-tts` package (Neerja for English, Swara for Hindi, Shruti for Telugu, Pallavi for Tamil, Sapna for Kannada), saved as mp3 files. gTTS and the browser's own voice are fallbacks. |
@@ -163,7 +198,9 @@ With Docker: `docker build -t word-wizards .` and then `docker run -p 7860:7860 
 ```
 app/main.py            FastAPI app, serves the games and /api/report
 app/scoring.py         skill scores, the likelihood index, report text
+app/adaptive.py        adaptive practice: knowledge tracing, levels, format profile, session plans
 ml/train.py            trains and evaluates the two models
+ml/simulate_adaptive.py  simulation comparing adaptive and fixed-level practice
 models/                trained model, metrics.json, shap_summary.png
 static/index.html      the whole front end (landing, setup, map, games, report)
 static/content.json    all words and instructions in the five languages
