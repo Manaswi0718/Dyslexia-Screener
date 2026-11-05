@@ -186,10 +186,10 @@ th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{co
 .tabs button[aria-selected=true]{background:var(--ink);color:#fff}
 .disclaimer{font-size:.8rem;color:var(--muted);margin-top:18px}
 /* Errol's wardrobe */
-.owlwrap{position:relative;display:inline-block;line-height:1}
-.owlwrap .hat{position:absolute;left:50%;top:-.34em;transform:translateX(-50%) rotate(-10deg);font-size:.58em;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
+.owlwrap{position:relative;display:inline-grid;place-items:center;line-height:1;width:1.45em;height:1.45em;border-radius:50%;transition:background .2s}
+.owlwrap .hat{position:absolute;left:50%;top:-.22em;transform:translateX(-50%) rotate(-10deg);font-size:.58em;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
 .swatches{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;font-size:.85rem}
-.swatch{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.swatch{width:30px;height:30px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line);font-size:.7rem;color:var(--muted);padding:0}
 .swatch[aria-pressed=true]{box-shadow:0 0 0 3px var(--ink)}
 .shop{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:12px}
 .shop button{background:#fff;border:3px solid var(--line);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;font-size:.85rem}
@@ -1293,24 +1293,24 @@ function practiceSingle(gameId) {
 
 
 /* ---------- Errol's wardrobe: coins buy hats; colour is a free choice. Purely cosmetic: never affects scores. ---------- */
-const HUES = [0, 150, 205, 270, 320];
+const BGS = ["", "#CDEFEA", "#D6E8FF", "#E7DFFC", "#FFE1CC", "#FFF1B8"];   // soft circle behind Errol; Errol keeps his own colours
 const HATS = [["🧢", 20], ["🎀", 30], ["🌸", 40], ["🎩", 50], ["👒", 70], ["🎓", 90], ["👑", 120]];
 const wkey = () => learnerKey(S.name);
-function wallet() { return { coins: 0, hat: "", hue: 0, owned: [], ...(store.get("ww_wallet", {})[wkey()] || {}) }; }
+function wallet() { return { coins: 0, hat: "", bg: "", owned: [], ...(store.get("ww_wallet", {})[wkey()] || {}) }; }
 function saveWallet(w) { const all = store.get("ww_wallet", {}); all[wkey()] = w; store.set("ww_wallet", all); }
 function bankCoins() { if (S.banked || !S.coins) return; const w = wallet(); w.coins += S.coins; saveWallet(w); S.banked = true; }
 function owlFace(w = wallet()) {
-  return `<span class="owlwrap"><span style="display:inline-block;filter:hue-rotate(${w.hue}deg)">🦉</span>${w.hat ? `<span class="hat">${w.hat}</span>` : ""}</span>`;
+  return `<span class="owlwrap" style="background:${w.bg ? `radial-gradient(circle at 50% 45%,#fff 0 30%,${w.bg} 62%)` : "transparent"}"><span>🦉</span>${w.hat ? `<span class="hat">${w.hat}</span>` : ""}</span>`;
 }
 function swatchRow() {
   const w = wallet();
-  return `<div class="swatches"><span class="muted">Pick Errol's colour:</span>${HUES.map(h => `<button class="swatch" data-hue="${h}" aria-label="colour" aria-pressed="${w.hue === h}"
-    style="background:radial-gradient(circle at 40% 35%,#fff7,transparent 60%),#9B6B43;filter:hue-rotate(${h}deg)"></button>`).join("")}</div>`;
+  return `<div class="swatches"><span class="muted">Pick Errol's colour:</span>${BGS.map((c, i) => `<button class="swatch" data-bg="${i}" aria-label="${c ? "colour " + i : "no colour"}" aria-pressed="${(w.bg || "") === c}"
+    style="background:${c || "#fff"}">${c ? "" : "✕"}</button>`).join("")}</div>`;
 }
 function wireSwatches(onChange) {
-  app.querySelectorAll("[data-hue]").forEach(b => b.onclick = () => {
-    const w = wallet(); w.hue = +b.dataset.hue; saveWallet(w);
-    app.querySelectorAll("[data-hue]").forEach(x => x.setAttribute("aria-pressed", x === b)); SFX.good(); onChange && onChange();
+  app.querySelectorAll("[data-bg]").forEach(b => b.onclick = () => {
+    const w = wallet(); w.bg = BGS[+b.dataset.bg]; saveWallet(w);
+    app.querySelectorAll("[data-bg]").forEach(x => x.setAttribute("aria-pressed", x === b)); SFX.good(); onChange && onChange();
   });
 }
 function wardrobe(back) {
