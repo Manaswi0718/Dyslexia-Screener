@@ -19,9 +19,9 @@ This is a screening tool. It can't diagnose anything, and we haven't tested it w
 
 | | |
 |---|---|
-| Team name | _your team name_ |
+| Team name | Terminal Breakers |
 | Members | Manaswi C, Reenu P, Harshita V K |
-| College | _your college_ |
+| College | Nitte Meenakshi Institute of Technology |
 
 ## Why we built this
 
